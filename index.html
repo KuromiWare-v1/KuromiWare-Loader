@@ -1,1 +1,43 @@
-html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KittenWare Test Page</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #ffe6f0, #d0f0ff);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      color: #ff69b4;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      font-size: 3em;
+      animation: sparkle 1s infinite alternate;
+    }
+    @keyframes sparkle {
+      from { text-shadow: 0 0 10px #ff99cc; }
+      to { text-shadow: 0 0 20px #ffccff, 0 0 30px #ffffff; }
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #ffccf9;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #333;
+      box-shadow: 0 0 10px #ff99cc;
+    }
+    a:hover {
+      background: #ffe6f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>✨ KittenWare Is Alive ✨</h1>
+  <p>This is a test page hosted on GitHub Pages.</p>
+  <a href="example.lua" download>Download example.lua</a>
+</body>
+</html>
