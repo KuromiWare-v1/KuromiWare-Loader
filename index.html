@@ -4,14 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1a101c" />
-  <title>KuromiWare</title>
+  <title>KuromiWare v1</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --bg-url: url("https://motionbgs.com/media/1730/sweet-and-spooky-kuromi.jpg");
-      --ink: #0e0a10;
       --ink-2: #1a101c;
       --muted: #b8afc3;
       --panel: rgba(24,16,28,.48);
@@ -21,7 +20,6 @@
       --pink: #ff8ad6;
       --lav: #c4a1ff;
       --glow: 0 10px 40px rgba(255,102,196,.25), 0 2px 12px rgba(196,161,255,.2);
-      --radius-lg: 18px;
       --radius-xl: 24px;
       --shadow-xl: 0 20px 60px rgba(0,0,0,.45);
     }
@@ -35,19 +33,14 @@
       background: var(--ink-2);
       overflow-x: hidden;
       line-height: 1.55;
-      -webkit-font-smoothing: antialiased; 
+      -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .backdrop{
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      overflow: hidden;
-    }
+    /* Background with blend + Ken Burns + grain */
+    .backdrop{ position: fixed; inset: 0; z-index: -3; overflow: hidden; }
     .backdrop::before{
-      content:"";
-      position:absolute; inset:-4vmax;
+      content:""; position:absolute; inset:-4vmax;
       background:
         radial-gradient(1200px 800px at 80% 10%, rgba(255,138,214,.30), transparent 60%),
         radial-gradient(1200px 800px at 10% 90%, rgba(196,161,255,.24), transparent 60%),
@@ -57,21 +50,25 @@
       animation: kenburns 32s ease-in-out infinite alternate;
     }
     .backdrop::after{
-      content:"";
-      position:absolute; inset:0;
+      content:""; position:absolute; inset:0;
       background:
         radial-gradient(1200px 800px at 50% 10%, rgba(0,0,0,.34), transparent 60%),
         linear-gradient(180deg, rgba(10,6,12,.45), rgba(10,6,12,.68) 40%, rgba(10,6,12,.88));
-      mix-blend-mode: multiply;
-      pointer-events: none;
+      mix-blend-mode: multiply; pointer-events: none;
     }
-    .grain{
-      position: fixed; inset:0; z-index:-1; pointer-events:none; opacity:.08;
+    .grain{ position: fixed; inset:0; z-index:-2; pointer-events:none; opacity:.08;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
-      animation: drift 16s linear infinite alternate;
+      animation: drift 16s linear infinite alternate; }
+
+    /* Floating sparkles (pure CSS shapes) */
+    .particles{ position: fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; }
+    .sparkle{
+      position:absolute; width:6px; height:6px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff, rgba(255,102,196,.8) 60%, rgba(196,161,255,.6));
+      box-shadow: 0 0 10px rgba(255,102,196,.6), 0 0 20px rgba(196,161,255,.4);
+      opacity:.0; transform: translateY(20vh) scale(.8);
+      animation: rise var(--dur) linear var(--delay) infinite, twinkle 3s ease-in-out var(--delay) infinite;
     }
-    @keyframes kenburns{ 0%{transform:scale(1.04)} 100%{transform:scale(1.12) translate3d(1%,-1%,0)} }
-    @keyframes drift{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-2%,2%,0)} }
 
     .brand{
       position: fixed;
@@ -86,93 +83,121 @@
       box-shadow: var(--glow), var(--shadow-xl);
       display:flex; align-items:center; gap:10px;
       user-select: none;
+      transform: translateZ(0);
+      transition: transform .4s ease;
     }
+    .brand:hover{ transform: translateY(-2px); }
     .brand h1{
-      margin:0;
-      font-size: clamp(16px, 2.2vw, 22px);
-      letter-spacing:.4px;
-      font-weight: 800;
+      margin:0; font-size: clamp(16px, 2.2vw, 22px);
+      letter-spacing:.4px; font-weight: 800;
       background: linear-gradient(90deg, #fff, var(--pink) 35%, var(--lav) 70%, #fff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
       text-shadow: 0 6px 30px rgba(255,102,196,.25);
       white-space: nowrap;
+      background-size: 200% 100%;
+      animation: shimmer 8s linear infinite;
     }
 
-    .wrap{
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: clamp(18px, 4vw, 48px);
-    }
-    .hero{
-      margin-top: clamp(60px, 12vh, 160px);
-      max-width: 760px;
-    }
+    .wrap{ max-width: 1100px; margin: 0 auto; padding: clamp(18px, 4vw, 48px); }
+    .hero{ margin-top: clamp(60px, 12vh, 160px); max-width: 760px; perspective: 1000px; }
 
     .card{
-      position: relative;
-      border-radius: var(--radius-xl);
+      position: relative; border-radius: var(--radius-xl);
       background: linear-gradient(180deg, var(--panel), var(--panel-strong));
-      border: 1px solid var(--stroke);
+      border: 1px solid transparent;
       box-shadow: var(--shadow-xl), var(--glow);
       backdrop-filter: blur(10px) saturate(1.08);
-      padding: clamp(18px, 3vw, 28px);
-      overflow: hidden;
+      padding: clamp(18px, 3vw, 28px); overflow: hidden;
+      transform-style: preserve-3d;
+      transform: rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);
+      transition: transform .3s ease, box-shadow .4s ease;
+      opacity: 0; transform-origin: center;
+      animation: cardReveal .9s cubic-bezier(.2,.7,.2,1) .2s forwards;
+    }
+    .card::before{
+      content:""; position:absolute; inset:-40%;
+      background: conic-gradient(from 0deg, rgba(255,138,214,.08), rgba(196,161,255,.10), rgba(255,255,255,.05), rgba(255,138,214,.08));
+      filter: blur(18px); mix-blend-mode: screen;
+      animation: spin 16s linear infinite;
     }
     .card::after{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(420px 140px at 20% -10%, rgba(255,138,214,.35), transparent 60%),
-        radial-gradient(360px 140px at 95% 115%, rgba(196,161,255,.28), transparent 60%);
-      filter: blur(10px);
+      content:""; position:absolute; inset:0; border-radius: inherit; padding:1px;
+      background: conic-gradient(from var(--angle,0deg), #ffffff33, #ff8ad666, #c4a1ff66, #ffffff33);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+              mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      animation: borderSpin 12s linear infinite;
       pointer-events:none;
     }
+    .card:hover{ box-shadow: 0 30px 80px rgba(0,0,0,.55), var(--glow); }
 
     .eyebrow{
-      font-size: 12px;
-      letter-spacing: .28em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin: 0 0 10px;
+      font-size: 12px; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--muted); margin: 0 0 10px; opacity:.85;
+      animation: fadeSlide .8s ease .45s both;
     }
     h2{
-      margin: 0 0 8px;
-      font-size: clamp(28px, 5vw, 40px);
-      line-height: 1.08;
-      font-weight: 800;
+      margin: 0 0 8px; font-size: clamp(28px, 5vw, 40px); line-height: 1.08; font-weight: 800;
+      background: linear-gradient(90deg, #fff 0%, #fff 60%, #ffe1f6 100%);
+      -webkit-background-clip:text; background-clip:text; color: transparent;
+      text-shadow: 0 6px 30px rgba(255,102,196,.15);
+      background-size: 150% 100%;
+      animation: titleSweep 2.6s cubic-bezier(.2,.7,.2,1) .35s both;
     }
-    p{ margin: 10px 0; color: #efe8f4; }
+    p{ margin: 10px 0; color: #efe8f4; animation: fadeSlide .8s ease .55s both; }
     .muted{ color: var(--muted); }
 
-    footer{
-      margin: clamp(20px, 4vw, 40px) 0 10px;
-      text-align:center;
-      color: var(--muted);
-      font-size: 12.5px;
-      opacity:.9;
+    footer{ margin: clamp(20px, 4vw, 40px) 0 10px; text-align:center; color: var(--muted); font-size: 12.5px; opacity:.9; }
+
+    @keyframes kenburns{ 0%{transform:scale(1.04)} 100%{transform:scale(1.12) translate3d(1%,-1%,0)} }
+    @keyframes drift{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-2%,2%,0)} }
+    @keyframes shimmer{ 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
+    @keyframes spin{ to{ transform: rotate(1turn); } }
+    @keyframes borderSpin{ to{ --angle: 360deg; } }
+    @keyframes cardReveal{
+      0%{ opacity:0; transform: translateY(18px) rotateX(2deg) rotateY(-2deg); }
+      100%{ opacity:1; transform: translateY(0) rotateX(var(--rx,0)) rotateY(var(--ry,0)); }
+    }
+    @keyframes fadeSlide{
+      0%{ opacity:0; transform: translateY(8px); }
+      100%{ opacity:1; transform: translateY(0); }
+    }
+    @keyframes titleSweep{
+      0%{ background-position: 120% 0; letter-spacing: .2px; opacity:.0; transform: translateY(8px); }
+      100%{ background-position: 0 0; letter-spacing: .5px; opacity:1; transform: translateY(0); }
+    }
+    @keyframes rise{
+      0%{ opacity:0; transform: translateY(20vh) scale(.8); }
+      10%,70%{ opacity:.9; }
+      100%{ opacity:0; transform: translateY(-120vh) scale(1.1); }
+    }
+    @keyframes twinkle{
+      0%,100%{ filter: brightness(1); }
+      50%{ filter: brightness(1.4); }
     }
 
     @media (prefers-reduced-motion: reduce){
-      .backdrop::before{ animation: none; transform: none; }
-      .grain{ animation: none; }
+      .backdrop::before, .grain, .sparkle, .brand h1, .card, .card::before, .card::after,
+      .eyebrow, h2, p { animation: none !important; }
+      .card{ opacity:1; transform:none; }
     }
   </style>
 </head>
 <body>
   <div class="backdrop" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
+  <div class="particles" aria-hidden="true" id="particles"></div>
 
-  <div class="brand" aria-label="Site title">
-    <h1>KuromiWare</h1>
+  <div class="brand" aria-label="Site title" id="brand">
+    <h1>KuromiWare v1</h1>
   </div>
 
   <main class="wrap">
     <section class="hero">
-      <article class="card" aria-labelledby="about-title">
+      <article class="card tilt" aria-labelledby="about-title" id="about-card">
         <p class="eyebrow">About</p>
         <h2 id="about-title">What is KuromiWare?</h2>
+
         <p><span class="muted">KuromiWare!!</span> — The best town script frfr</p>
         <p>Has all the goodies</p>
         <p class="muted">Have a good day!</p>
@@ -184,6 +209,54 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    (function(){
+      const card = document.getElementById('about-card');
+      const brand = document.getElementById('brand');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+
+      const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+      window.addEventListener('mousemove', (e)=>{
+        const { innerWidth:w, innerHeight:h } = window;
+        const x = (e.clientX / w - 0.5) * 2; 
+        const y = (e.clientY / h - 0.5) * 2;
+        const rx = clamp(-y * 3, -6, 6); 
+        const ry = clamp( x * 5, -8, 8);
+        card.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+        card.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+        brand.style.transform = `translate(${(x*3).toFixed(1)}px, ${(y*-2).toFixed(1)}px)`;
+      }, { passive:true });
+
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){ card.style.willChange = 'transform'; io.disconnect(); }
+        });
+      }, { threshold:.2 });
+      io.observe(card);
+    })();
+
+    (function sparkles(){
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+
+      const MAX = 24;
+      const host = document.getElementById('particles');
+      const rand = (min, max) => Math.random() * (max - min) + min;
+
+      for (let i=0; i<MAX; i++){
+        const s = document.createElement('span');
+        s.className = 'sparkle';
+        const size = rand(4,8);
+        s.style.width = s.style.height = size + 'px';
+        s.style.left = rand(-5, 105) + 'vw';
+        s.style.top  = rand(60, 110) + 'vh';
+        s.style.setProperty('--dur', rand(10, 22) + 's');
+        s.style.setProperty('--delay', rand(-8, 6) + 's');
+        host.appendChild(s);
+      }
+    })();
   </script>
 </body>
 </html>
