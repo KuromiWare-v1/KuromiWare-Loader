@@ -2,14 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1a101c" />
-  <title>KuromiWare v1</title>
+  <title>KuromiWare</title>
 
-  <!-- Font (lightweight, modern) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
   <style>
@@ -17,15 +13,13 @@
       --bg-url: url("https://motionbgs.com/media/1730/sweet-and-spooky-kuromi.jpg");
       --ink: #0e0a10;
       --ink-2: #1a101c;
-      --muted: #a9a1ab;
-      --panel: rgba(24,16,28,.45);
-      --panel-strong: rgba(24,16,28,.65);
-      --glass: rgba(255,255,255,.08);
-      --stroke: rgba(255,255,255,.12);
+      --muted: #b8afc3;
+      --panel: rgba(24,16,28,.48);
+      --panel-strong: rgba(24,16,28,.68);
+      --stroke: rgba(255,255,255,.14);
       --white: #f7f6f9;
       --pink: #ff8ad6;
       --lav: #c4a1ff;
-      --hot: #ff66c4;
       --glow: 0 10px 40px rgba(255,102,196,.25), 0 2px 12px rgba(196,161,255,.2);
       --radius-lg: 18px;
       --radius-xl: 24px;
@@ -40,9 +34,11 @@
       color: var(--white);
       background: var(--ink-2);
       overflow-x: hidden;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased; 
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Background with blend + zoom + grain */
     .backdrop{
       position: fixed;
       inset: 0;
@@ -51,10 +47,10 @@
     }
     .backdrop::before{
       content:"";
-      position:absolute; inset: -4vmax;
+      position:absolute; inset:-4vmax;
       background:
-        radial-gradient(1200px 800px at 80% 10%, rgba(255,138,214,.35), transparent 60%),
-        radial-gradient(1200px 800px at 10% 90%, rgba(196,161,255,.28), transparent 60%),
+        radial-gradient(1200px 800px at 80% 10%, rgba(255,138,214,.30), transparent 60%),
+        radial-gradient(1200px 800px at 10% 90%, rgba(196,161,255,.24), transparent 60%),
         var(--bg-url) center / cover no-repeat fixed;
       filter: saturate(1.05) contrast(1.05) brightness(.92);
       transform: scale(1.04);
@@ -64,178 +60,103 @@
       content:"";
       position:absolute; inset:0;
       background:
-        radial-gradient(1200px 800px at 50% 10%, rgba(0,0,0,.35), transparent 60%),
-        linear-gradient(180deg, rgba(10,6,12,.45), rgba(10,6,12,.65) 40%, rgba(10,6,12,.85));
+        radial-gradient(1200px 800px at 50% 10%, rgba(0,0,0,.34), transparent 60%),
+        linear-gradient(180deg, rgba(10,6,12,.45), rgba(10,6,12,.68) 40%, rgba(10,6,12,.88));
       mix-blend-mode: multiply;
       pointer-events: none;
     }
-    /* subtle film grain */
     .grain{
-      position: fixed;
-      inset:0;
-      z-index: -1;
-      pointer-events:none;
-      opacity:.08;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+      position: fixed; inset:0; z-index:-1; pointer-events:none; opacity:.08;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
       animation: drift 16s linear infinite alternate;
     }
+    @keyframes kenburns{ 0%{transform:scale(1.04)} 100%{transform:scale(1.12) translate3d(1%,-1%,0)} }
+    @keyframes drift{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-2%,2%,0)} }
 
-    @keyframes kenburns{
-      0%   { transform: scale(1.04) translate3d(0,0,0); }
-      100% { transform: scale(1.12) translate3d(1%, -1%, 0); }
-    }
-    @keyframes drift{
-      0%   { transform: translate3d(0,0,0); }
-      100% { transform: translate3d(-2%, 2%, 0); }
-    }
-
-    /* Page chrome */
-    .wrap{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: clamp(16px, 3vw, 40px);
-    }
-
-    header.hero{
-      position: relative;
-      margin: clamp(18px, 3vw, 28px) 0 clamp(14px, 2.2vw, 24px);
-      padding: clamp(14px, 2vw, 20px);
-      border-radius: var(--radius-xl);
-      background: linear-gradient(180deg, var(--panel), var(--panel-strong));
-      backdrop-filter: blur(10px) saturate(1.1);
-      border: 1px solid var(--stroke);
-      box-shadow: var(--shadow-xl), var(--glow);
-      overflow: hidden;
-    }
-    .hero::after{
-      content:"";
-      position:absolute; inset:-2px;
-      pointer-events:none;
-      background:
-        radial-gradient(400px 120px at 20% -10%, rgba(255,138,214,.35), transparent 60%),
-        radial-gradient(320px 120px at 85% 110%, rgba(196,161,255,.28), transparent 60%);
-      filter: blur(10px);
-    }
     .brand{
-      display: flex;
-      align-items: center;
-      gap: clamp(14px, 2vw, 18px);
+      position: fixed;
+      top: clamp(10px, 2.2vw, 20px);
+      right: clamp(10px, 2.2vw, 20px);
+      z-index: 10;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(24,16,28,.55), rgba(24,16,28,.35));
+      backdrop-filter: blur(10px) saturate(1.1);
+      box-shadow: var(--glow), var(--shadow-xl);
+      display:flex; align-items:center; gap:10px;
+      user-select: none;
     }
-    .logo{
-      width: 56px; height: 56px;
-      border-radius: 16px;
-      background:
-        radial-gradient(120% 120% at 30% 30%, rgba(255,138,214,.85), rgba(196,161,255,.8) 60%, rgba(255,138,214,.7)),
-        linear-gradient(180deg, rgba(255,255,255,.15), rgba(255,255,255,.02));
-      border: 1px solid rgba(255,255,255,.25);
-      box-shadow: var(--glow);
-      display:grid; place-items:center;
-    }
-    .logo svg{ width: 28px; height: 28px; opacity:.95; }
-    .title{
-      line-height: 1.05;
-    }
-    .title h1{
+    .brand h1{
       margin:0;
-      font-size: clamp(28px, 6vw, 54px);
-      letter-spacing: .5px;
+      font-size: clamp(16px, 2.2vw, 22px);
+      letter-spacing:.4px;
       font-weight: 800;
-      background: linear-gradient(90deg, #fff, var(--pink) 30%, var(--lav) 70%, #fff 100%);
+      background: linear-gradient(90deg, #fff, var(--pink) 35%, var(--lav) 70%, #fff 100%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       text-shadow: 0 6px 30px rgba(255,102,196,.25);
-    }
-    .title p{
-      margin:.3rem 0 0;
-      color: var(--muted);
-      font-weight: 400;
-      letter-spacing:.2px;
+      white-space: nowrap;
     }
 
-    /* Gallery */
-    .gallery{
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: clamp(12px, 1.6vw, 18px);
-      margin-top: clamp(14px, 2vw, 22px);
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(18px, 4vw, 48px);
     }
-    figure.card{
+    .hero{
+      margin-top: clamp(60px, 12vh, 160px);
+      max-width: 760px;
+    }
+
+    .card{
       position: relative;
-      margin:0;
-      aspect-ratio: 4 / 3;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, var(--panel), var(--panel-strong));
       border: 1px solid var(--stroke);
-      box-shadow: var(--shadow-xl);
-      transform: translateZ(0);
-      transition: transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s cubic-bezier(.2,.7,.2,1);
-      will-change: transform;
+      box-shadow: var(--shadow-xl), var(--glow);
+      backdrop-filter: blur(10px) saturate(1.08);
+      padding: clamp(18px, 3vw, 28px);
+      overflow: hidden;
     }
-    figure.card:hover{
-      transform: translateY(-6px);
-      box-shadow: 0 30px 80px rgba(0,0,0,.55), var(--glow);
-    }
-    .card img{
-      position:absolute; inset:0;
-      width:100%; height:100%;
-      object-fit: cover;
-      filter: saturate(1.06) contrast(1.05) brightness(.98);
-      transform: scale(1.03);
-      transition: transform .6s ease, filter .6s ease;
-    }
-    figure.card:hover img{
-      transform: scale(1.06);
-      filter: saturate(1.1) contrast(1.08) brightness(1);
-    }
-    /* Soft gradient sheen on top of images */
     .card::after{
       content:"";
-      position:absolute; inset:0;
+      position:absolute; inset:-2px;
       background:
-        radial-gradient(600px 220px at 70% -10%, rgba(255,138,214,.25), transparent 60%),
-        radial-gradient(600px 220px at 0% 110%, rgba(196,161,255,.20), transparent 55%),
-        linear-gradient(180deg, rgba(12,8,14,.0), rgba(12,8,14,.18) 65%, rgba(12,8,14,.45));
+        radial-gradient(420px 140px at 20% -10%, rgba(255,138,214,.35), transparent 60%),
+        radial-gradient(360px 140px at 95% 115%, rgba(196,161,255,.28), transparent 60%);
+      filter: blur(10px);
       pointer-events:none;
-      mix-blend-mode: screen;
-    }
-    /* Captions (non-clickable, decorative only) */
-    figcaption{
-      position:absolute; left:10px; right:10px; bottom:10px;
-      padding: 8px 10px;
-      border-radius: 12px;
-      background: linear-gradient(180deg, rgba(18,12,20,.6), rgba(18,12,20,.35));
-      backdrop-filter: blur(6px) saturate(1.1);
-      border: 1px solid rgba(255,255,255,.15);
-      font-size: 12.5px;
-      letter-spacing:.2px;
-      color: #f4e9f6;
-      display:flex; align-items:center; gap:8px;
-      box-shadow: 0 6px 24px rgba(0,0,0,.45);
-    }
-    .dot{
-      width:8px; height:8px; border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, #fff, var(--hot) 60%, #b459ff);
-      box-shadow: 0 0 12px rgba(255,102,196,.65);
-      flex: 0 0 8px;
     }
 
-    /* Footer line */
+    .eyebrow{
+      font-size: 12px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+    h2{
+      margin: 0 0 8px;
+      font-size: clamp(28px, 5vw, 40px);
+      line-height: 1.08;
+      font-weight: 800;
+    }
+    p{ margin: 10px 0; color: #efe8f4; }
+    .muted{ color: var(--muted); }
+
     footer{
-      margin: clamp(18px, 3vw, 30px) 0;
+      margin: clamp(20px, 4vw, 40px) 0 10px;
       text-align:center;
       color: var(--muted);
       font-size: 12.5px;
       opacity:.9;
     }
 
-    /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce){
       .backdrop::before{ animation: none; transform: none; }
       .grain{ animation: none; }
-      figure.card, figure.card:hover{ transition: none; transform: none; }
-      .card img{ transition: none; }
     }
   </style>
 </head>
@@ -243,76 +164,26 @@
   <div class="backdrop" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
 
+  <div class="brand" aria-label="Site title">
+    <h1>KuromiWare</h1>
+  </div>
+
   <main class="wrap">
-    <header class="hero" aria-label="KuromiWare Header">
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <!-- Cute heart-skull vibe -->
-          <svg viewBox="0 0 24 24" fill="none" role="img" aria-label="Kuromi icon">
-            <path d="M12 4.5c-1.2-2-4.6-2-5.8.4C5.3 6.2 5 7.7 6 9c.9 1.1 2.6 2.2 3.6 3.2.8.8 1.2 1.1 2.4 2.3 1.2-1.2 1.6-1.5 2.4-2.3 1-1 2.7-2.1 3.6-3.2 1-1.2.7-2.8-.2-4.1C16.6 2.6 13.2 2.5 12 4.5Z" fill="currentColor"/>
-            <circle cx="9.5" cy="8.5" r="1" fill="#1a101c"/>
-            <circle cx="14.5" cy="8.5" r="1" fill="#1a101c"/>
-          </svg>
-        </div>
-        <div class="title">
-          <h1>KuromiWare</h1>
-          <p>Sweet &amp; spooky showcase — sleek previews, no buttons, just vibes.</p>
-        </div>
-      </div>
-    </header>
+    <section class="hero">
+      <article class="card" aria-labelledby="about-title">
+        <p class="eyebrow">About</p>
+        <h2 id="about-title">What is KuromiWare?</h2>
+        <p><span class="muted">KuromiWare!!</span> — The best town script frfr</p>
+        <p>Has all the goodies</p>
+        <p class="muted">Have a good day!</p>
+      </article>
 
-    <!-- Gallery: purely visual previews (no buttons/links) -->
-    <section class="gallery" aria-label="Preview Gallery" id="gallery">
-      <!-- Cards are injected below; keeping a few static as immediate content -->
-      <figure class="card">
-        <img src="https://picsum.photos/seed/kuromi-01/1200/900" alt="Preview image 1" loading="lazy" decoding="async">
-        <figcaption><span class="dot" aria-hidden="true"></span> Preview · Noir sugar</figcaption>
-      </figure>
-      <figure class="card">
-        <img src="https://picsum.photos/seed/kuromi-02/1200/900" alt="Preview image 2" loading="lazy" decoding="async">
-        <figcaption><span class="dot" aria-hidden="true"></span> Preview · Velvet moon</figcaption>
-      </figure>
-      <figure class="card">
-        <img src="https://picsum.photos/seed/kuromi-03/1200/900" alt="Preview image 3" loading="lazy" decoding="async">
-        <figcaption><span class="dot" aria-hidden="true"></span> Preview · Blush night</figcaption>
-      </figure>
-      <!-- More added via JS for variety -->
+      <footer>© <span id="year"></span> KuromiWare</footer>
     </section>
-
-    <footer>© <span id="year"></span> KuromiWare — made with glitter &amp; grayscale.</footer>
   </main>
 
   <script>
-    // Auto-fill current year
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Add more non-interactive previews (no buttons/links)
-    const seeds = [
-      "kuromi-04","kuromi-05","kuromi-06","kuromi-07","kuromi-08","kuromi-09",
-      "kuromi-10","kuromi-11","kuromi-12","kuromi-13","kuromi-14","kuromi-15"
-    ];
-    const captions = [
-      "Candy dusk","Cherry static","Goth plush","Lilac haze","Bubble midnight","Soft glare",
-      "Hollow glow","Velvet bite","Sugar storm","Pastel riot","Night bloom","Cotton glitch"
-    ];
-    const gallery = document.getElementById('gallery');
-
-    seeds.forEach((seed, i) => {
-      const fig = document.createElement('figure');
-      fig.className = 'card';
-      const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      img.alt = `Preview image ${i+4}`;
-      img.src = `https://picsum.photos/seed/${encodeURIComponent(seed)}/1200/900`;
-      const cap = document.createElement('figcaption');
-      const dot = document.createElement('span');
-      dot.className = 'dot'; dot.setAttribute('aria-hidden','true');
-      cap.appendChild(dot);
-      cap.append(` Preview · ${captions[i % captions.length]}`);
-      fig.append(img, cap);
-      gallery.appendChild(fig);
-    });
   </script>
 </body>
 </html>
