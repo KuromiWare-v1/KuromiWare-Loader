@@ -1,9 +1,9 @@
 -- Hello! Unexpected visit i see
 
 print([[
-KittenWare On Top
+KumoriWare On Top
 ==========================================================
-|                   KITTENWARE LOADER                    |
+|                   KumoriWare LOADER                    |
 |--------------------------------------------------------|
 | Loader: Good                                           |
 | Nigga status: yes                                      |
