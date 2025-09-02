@@ -70,6 +70,7 @@
       animation: rise var(--dur) linear var(--delay) infinite, twinkle 3s ease-in-out var(--delay) infinite;
     }
 
+    /* Top-right shimmering brand */
     .brand{
       position: fixed;
       top: clamp(10px, 2.2vw, 20px);
@@ -101,6 +102,7 @@
     .wrap{ max-width: 1100px; margin: 0 auto; padding: clamp(18px, 4vw, 48px); }
     .hero{ margin-top: clamp(60px, 12vh, 160px); max-width: 760px; perspective: 1000px; }
 
+    /* Animated glass card */
     .card{
       position: relative; border-radius: var(--radius-xl);
       background: linear-gradient(180deg, var(--panel), var(--panel-strong));
@@ -149,6 +151,64 @@
 
     footer{ margin: clamp(20px, 4vw, 40px) 0 10px; text-align:center; color: var(--muted); font-size: 12.5px; opacity:.9; }
 
+    /* CTA Dock (Discord + Buy + Features) */
+    .cta-dock{
+      position: fixed;
+      right: clamp(14px, 3vw, 24px);
+      bottom: calc(clamp(14px, 3vw, 24px) + env(safe-area-inset-bottom, 0px));
+      z-index: 12;
+      display: flex;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(24,16,28,.6), rgba(24,16,28,.38));
+      backdrop-filter: blur(10px) saturate(1.1);
+      box-shadow: var(--glow), var(--shadow-xl);
+      animation: dockIn .8s cubic-bezier(.2,.7,.2,1) .3s both;
+      flex-wrap: wrap;
+    }
+    @keyframes dockIn{
+      0%{ opacity:0; transform: translateY(12px) scale(.98); }
+      100%{ opacity:1; transform: translateY(0) scale(1); }
+    }
+    .cta{
+      --ring: rgba(255,255,255,.45);
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 10px 14px;
+      font-weight: 800; letter-spacing:.2px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.18);
+      color: #fff; text-decoration: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.35);
+      transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+      position: relative; overflow: hidden;
+    }
+    .cta svg{ width: 18px; height: 18px; flex: 0 0 18px; }
+    .cta:focus-visible{
+      outline: 2px solid var(--ring);
+      outline-offset: 2px;
+    }
+    .cta:hover{ transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 36px rgba(0,0,0,.45); }
+    .cta:active{ transform: translateY(0) scale(.99); }
+
+    .cta.discord{
+      background: linear-gradient(90deg, #5865F2 0%, #8EA1E1 100%);
+    }
+    .cta.buy{
+      background: linear-gradient(90deg, #ff73d9 0%, #c4a1ff 100%);
+    }
+    .cta.features{
+      background: linear-gradient(90deg, #c4a1ff 0%, #ff8ad6 100%);
+    }
+    /* subtle ripple press */
+    .cta::after{
+      content:""; position:absolute; inset:0; background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,.25), transparent 40%);
+      opacity:0; transition: opacity .25s ease;
+    }
+    .cta:active::after{ opacity:.8; transition: opacity .05s ease; }
+
+    /* Keyframes */
     @keyframes kenburns{ 0%{transform:scale(1.04)} 100%{transform:scale(1.12) translate3d(1%,-1%,0)} }
     @keyframes drift{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-2%,2%,0)} }
     @keyframes shimmer{ 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
@@ -176,22 +236,32 @@
       50%{ filter: brightness(1.4); }
     }
 
+    /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce){
       .backdrop::before, .grain, .sparkle, .brand h1, .card, .card::before, .card::after,
-      .eyebrow, h2, p { animation: none !important; }
+      .eyebrow, h2, p, .cta-dock { animation: none !important; }
       .card{ opacity:1; transform:none; }
+    }
+
+    /* Mobile: let CTAs wrap nicely */
+    @media (max-width: 480px){
+      .cta-dock{ gap:8px; padding:6px; }
+      .cta{ padding:10px 12px; font-weight:700; }
     }
   </style>
 </head>
 <body>
+  <!-- Background layers -->
   <div class="backdrop" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
   <div class="particles" aria-hidden="true" id="particles"></div>
 
+  <!-- Top-right title -->
   <div class="brand" aria-label="Site title" id="brand">
     <h1>KuromiWare v1</h1>
   </div>
 
+  <!-- Content -->
   <main class="wrap">
     <section class="hero">
       <article class="card tilt" aria-labelledby="about-title" id="about-card">
@@ -207,9 +277,39 @@
     </section>
   </main>
 
+  <!-- CTA Dock -->
+  <nav class="cta-dock" aria-label="Quick actions">
+    <!-- Discord -->
+    <a class="cta discord" href="https://discord.gg/KYT59FhvV9" target="_blank" rel="noopener" aria-label="Join the KuromiWare Discord">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path fill="#fff" d="M19.54 5.34a16.6 16.6 0 0 0-4.06-1.26c-.17.31-.37.73-.5 1.06a15.16 15.16 0 0 0-5.94 0c-.13-.34-.33-.75-.5-1.06-1.42.26-2.78.7-4.06 1.26C2.67 9.07 1.98 12.7 2.2 16.28a16.4 16.4 0 0 0 5 2.52c.4-.55.75-1.13 1.05-1.75-.58-.22-1.13-.48-1.65-.79.14-.1.28-.2.42-.31a11.46 11.46 0 0 0 10.96 0c.14.11.28.21.42.31-.52.31-1.07.57-1.65.79.3.62.65 1.2 1.05 1.75a16.4 16.4 0 0 0 5-2.52c.26-4.03-.45-7.63-2.78-10.94ZM9.5 14.5c-.78 0-1.41-.73-1.41-1.62 0-.9.63-1.62 1.41-1.62s1.42.72 1.42 1.62c0 .89-.64 1.62-1.42 1.62Zm5 0c-.78 0-1.41-.73-1.41-1.62 0-.9.63-1.62 1.41-1.62s1.42.72 1.42 1.62c0 .89-.64 1.62-1.42 1.62Z"/>
+      </svg>
+      Discord
+    </a>
+
+    <!-- Features -->
+    <a class="cta features" href="https://kuromiware.shop/features" target="_blank" rel="noopener" aria-label="View KuromiWare features">
+      <!-- sparkles icon -->
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path fill="#fff" d="M12 2.5 13.7 7l4.8 1.7-4.8 1.7L12 16l-1.7-5.6L5.5 8.7 10.3 7 12 2.5Zm6.2 7.7.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6ZM5.8 13l.8 2.3 2.3.8-2.3.8-.8 2.3-.8-2.3-2.3-.8 2.3-.8.8-2.3Z"/>
+      </svg>
+      Features
+    </a>
+
+    <!-- Buy -->
+    <a class="cta buy" href="https://not-yet-there.com/kuromi" target="_blank" rel="noopener" aria-label="Buy KuromiWare">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path fill="#fff" d="M7 18a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 18Zm10 0a2 2 0 1 0 .001 4.001A2 2 0 0 0 17 18ZM6.2 6h13.07a1 1 0 0 1 .98 1.2l-1.18 6.5a2 2 0 0 1-1.97 1.63H9.02a2 2 0 0 1-1.97-1.64L5.5 5H3a1 1 0 0 1 0-2h3a2 2 0 0 1 1.97 1.64L8.3 10h8.74l.6-3.3H7.02L6.7 6Z"/>
+      </svg>
+      Buy
+    </a>
+  </nav>
+
   <script>
+    // Fill year
     document.getElementById('year').textContent = new Date().getFullYear();
 
+    // Soft parallax tilt on the main card + slight brand drift
     (function(){
       const card = document.getElementById('about-card');
       const brand = document.getElementById('brand');
@@ -237,6 +337,7 @@
       io.observe(card);
     })();
 
+    // Create floating sparkles
     (function sparkles(){
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduce) return;
@@ -257,6 +358,15 @@
         host.appendChild(s);
       }
     })();
+
+    // Ripple origin for CTA buttons
+    document.querySelectorAll('.cta').forEach(btn=>{
+      btn.addEventListener('pointerdown', ev=>{
+        const r = btn.getBoundingClientRect();
+        btn.style.setProperty('--x', ((ev.clientX - r.left) / r.width*100).toFixed(1) + '%');
+        btn.style.setProperty('--y', ((ev.clientY - r.top) / r.height*100).toFixed(1) + '%');
+      }, { passive:true });
+    });
   </script>
 </body>
 </html>
