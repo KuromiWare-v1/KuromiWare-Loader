@@ -1,266 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>KuromiWare • Preview UI</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg-url: url("https://motionbgs.com/media/1730/sweet-and-spooky-kuromi.jpg");
-    --ink-2:#1a101c; --muted:#b8afc3; --white:#f7f6f9;
-    --panel:rgba(24,16,28,.5); --panel-strong:rgba(24,16,28,.68);
-    --stroke:rgba(255,255,255,.14); --pink:#ff8ad6; --lav:#c4a1ff;
-    --glow:0 10px 40px rgba(255,102,196,.25),0 2px 12px rgba(196,161,255,.2);
-    --shadow-xl:0 20px 60px rgba(0,0,0,.45);
-    --radius:16px;
-    --pad:16px;
-    --gap:14px;
-    --col-width:520px; /* max column width before wrapping */
-  }
-
-  /* Reset + base */
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    color:var(--white); background:var(--ink-2); -webkit-font-smoothing:antialiased
-  }
-  img,svg{display:block; max-width:100%}
-
-  /* Background layers */
-  .backdrop{position:fixed; inset:0; z-index:-3; overflow:hidden}
-  .backdrop::before{
-    content:""; position:absolute; inset:-4vmax;
-    background:
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a101c" />
+  <title>KuromiWare v1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-url: url("https://motionbgs.com/media/1730/sweet-and-spooky-kuromi.jpg");
+      --ink-2:#1a101c; --muted:#b8afc3; --white:#f7f6f9;
+      --panel:rgba(24,16,28,.5); --panel-strong:rgba(24,16,28,.68);
+      --stroke:rgba(255,255,255,.14); --pink:#ff8ad6; --lav:#c4a1ff;
+      --glow:0 10px 40px rgba(255,102,196,.25),0 2px 12px rgba(196,161,255,.2);
+      --shadow-xl:0 20px 60px rgba(0,0,0,.45);
+      --radius:16px; --gap:14px; --col-width:520px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--white);background:var(--ink-2);-webkit-font-smoothing:antialiased}
+    .backdrop{position:fixed;inset:0;z-index:-3;overflow:hidden}
+    .backdrop::before{content:"";position:absolute;inset:-4vmax;background:
       radial-gradient(1200px 800px at 80% 10%, rgba(255,138,214,.28), transparent 60%),
       radial-gradient(1200px 800px at 10% 90%, rgba(196,161,255,.22), transparent 60%),
-      var(--bg-url) center/cover no-repeat fixed;
-    filter:saturate(1.05) contrast(1.05) brightness(.92);
-    transform:scale(1.04);
-    animation:kenburns 32s ease-in-out infinite alternate;
-  }
-  .backdrop::after{
-    content:""; position:absolute; inset:0;
-    background:
+      var(--bg-url) center/cover no-repeat fixed;filter:saturate(1.05) contrast(1.05) brightness(.92);transform:scale(1.04)}
+    .backdrop::after{content:"";position:absolute;inset:0;background:
       radial-gradient(1200px 800px at 50% 10%, rgba(0,0,0,.34), transparent 60%),
-      linear-gradient(180deg, rgba(10,6,12,.45), rgba(10,6,12,.68) 40%, rgba(10,6,12,.88));
-    mix-blend-mode:multiply
-  }
-  .grain{position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.08;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
-  }
+      linear-gradient(180deg, rgba(10,6,12,.45), rgba(10,6,12,.68) 40%, rgba(10,6,12,.88));mix-blend-mode:multiply}
+    .grain{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.08;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
 
-  /* Shell & topbar */
-  .shell{max-width:1120px; margin:0 auto; padding:22px clamp(14px,3vw,28px)}
-  .brand{
-    display:flex; align-items:center; gap:10px; margin-bottom:14px;
-    width:100%;
-  }
-  .brand h1{
-    margin:0; font-size:clamp(18px,2.4vw,24px); font-weight:800; letter-spacing:.2px;
-    background:linear-gradient(90deg,#fff, var(--pink) 35%, var(--lav) 70%, #fff 100%);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-    text-shadow:0 6px 30px rgba(255,102,196,.25);
-  }
+    .shell{max-width:1120px;margin:0 auto;padding:22px clamp(14px,3vw,28px)}
+    .brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .brand h1{margin:0;font-size:clamp(18px,2.4vw,24px);font-weight:800;letter-spacing:.2px;background:linear-gradient(90deg,#fff,var(--pink) 35%,var(--lav) 70%,#fff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 6px 30px rgba(255,102,196,.25)}
 
-  /* Tabs (sticky, centered, no offset jumps) */
-  .tabs{
-    position:sticky; top:0; z-index:5;
-    padding:8px; margin-bottom:16px;
-    backdrop-filter:blur(10px) saturate(1.05);
-  }
-  .tabbar{
-    display:flex; gap:8px; justify-content:center; flex-wrap:wrap
-  }
-  .tab{
-    padding:10px 14px; border-radius:12px;
-    border:1px solid var(--stroke);
-    background:linear-gradient(180deg,var(--panel-strong),rgba(24,16,28,.44));
-    color:var(--muted); font-weight:700; letter-spacing:.2px;
-    cursor:pointer; transition:.18s ease;
-    box-shadow:0 1px 0 rgba(255,255,255,.04) inset;
-  }
-  .tab:is(:hover,:focus-visible){ color:#fff; transform:translateY(-1px) }
-  .tab.active{
-    color:#fff;
-    background:linear-gradient(90deg,var(--pink),var(--lav));
-    border-color:transparent;
-    box-shadow:var(--glow)
-  }
+    .tabs{position:sticky;top:0;z-index:5;padding:8px;margin-bottom:16px;backdrop-filter:blur(10px) saturate(1.05)}
+    .tabbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .tab{padding:10px 14px;border-radius:12px;border:1px solid var(--stroke);background:linear-gradient(180deg,var(--panel-strong),rgba(24,16,28,.44));color:var(--muted);font-weight:700;letter-spacing:.2px;cursor:pointer;transition:.18s ease;box-shadow:0 1px 0 rgba(255,255,255,.04) inset}
+    .tab:is(:hover,:focus-visible){color:#fff;transform:translateY(-1px)}
+    .tab.active{color:#fff;background:linear-gradient(90deg,var(--pink),var(--lav));border-color:transparent;box-shadow:var(--glow)}
 
-  /* Content area */
-  .content{
-    display:none;
-    animation:fadeIn .28s ease;
-  }
-  .content.active{ display:block }
+    .content{display:none;animation:fadeIn .28s ease}
+    .content.active{display:block}
 
-  /* Grid to avoid offset: consistent baselines & widths */
-  .grid{
-    display:grid;
-    grid-template-columns:repeat( auto-fit, minmax(min(100%, var(--col-width)), 1fr) );
-    gap:var(--gap)
-  }
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--col-width)),1fr));gap:var(--gap)}
 
-  /* Cards */
-  .card{
-    background:linear-gradient(180deg,var(--panel),var(--panel-strong));
-    border:1px solid var(--stroke);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow-xl),var(--glow);
-    padding:18px;
-    backdrop-filter:blur(10px) saturate(1.08);
-  }
-  .card h3{
-    margin:0 0 10px; color:var(--pink); font-size:15px; letter-spacing:.2px
-  }
+    .card{background:linear-gradient(180deg,var(--panel),var(--panel-strong));border:1px solid var(--stroke);border-radius:var(--radius);box-shadow:var(--shadow-xl),var(--glow);padding:18px;backdrop-filter:blur(10px) saturate(1.08)}
+    .card h3{margin:0 0 10px;color:var(--pink);font-size:15px;letter-spacing:.2px}
+    .eyebrow{color:var(--muted);font-size:12px;letter-spacing:.25em;text-transform:uppercase;margin:0 0 12px}
 
-  /* Control rows: perfect alignment */
-  .row{
-    display:grid; grid-template-columns: 1fr auto; align-items:center;
-    gap:12px; padding:10px 0; border-top:1px solid rgba(255,255,255,.06);
-  }
-  .row:first-of-type{ border-top:0; padding-top:0 }
-  .label{ color:#eee; opacity:.92; font-weight:600; }
-  .hint{ color:var(--muted); font-size:12px; margin-top:4px }
+    .row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:10px 0;border-top:1px solid rgba(255,255,255,.06)}
+    .row:first-of-type{border-top:0;padding-top:0}
+    .label{color:#eee;opacity:.95;font-weight:600}
+    .hint{color:var(--muted);font-size:12px;margin-top:4px}
 
-  /* Inputs */
-  .switch{
-    --w:42px; --h:24px;
-    position:relative; inline-size:var(--w); block-size:var(--h);
-  }
-  .switch input{ position:absolute; inset:0; opacity:0 }
-  .track{
-    position:absolute; inset:0; border-radius:999px;
-    background:#2a2030; border:1px solid rgba(255,255,255,.13);
-    transition:.18s ease
-  }
-  .knob{
-    position:absolute; top:2px; left:2px; width:20px; height:20px;
-    border-radius:50%; background:#d7cbe4; box-shadow:0 2px 8px rgba(0,0,0,.35);
-    transition:.18s ease
-  }
-  .switch input:checked ~ .track{
-    background:linear-gradient(90deg,var(--pink),var(--lav)); border-color:transparent
-  }
-  .switch input:checked ~ .knob{ left: calc(100% - 22px) }
+    .switch{--w:44px;--h:24px;position:relative;inline-size:var(--w);block-size:var(--h)}
+    .switch input{position:absolute;inset:0;opacity:0}
+    .track{position:absolute;inset:0;border-radius:999px;background:#2a2030;border:1px solid rgba(255,255,255,.13);transition:.18s ease}
+    .knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#d7cbe4;box-shadow:0 2px 8px rgba(0,0,0,.35);transition:.18s ease}
+    .switch input:checked ~ .track{background:linear-gradient(90deg,var(--pink),var(--lav));border-color:transparent}
+    .switch input:checked ~ .knob{left:calc(100% - 22px)}
 
-  .range{
-    appearance:none; inline-size:260px; height:10px; background:#271c2b;
-    border-radius:999px; border:1px solid rgba(255,255,255,.12); position:relative
-  }
-  .range::-webkit-slider-thumb{
-    appearance:none; width:18px; height:18px; border-radius:50%;
-    background:linear-gradient(90deg,var(--pink),var(--lav));
-    box-shadow:0 0 0 2px rgba(0,0,0,.35); cursor:pointer
-  }
-  .select, .color{
-    background:#2a2030; color:#fff; border:1px solid rgba(255,255,255,.16);
-    border-radius:10px; padding:8px 12px; font-weight:600
-  }
-  .color{ padding:6px; width:48px; height:36px }
+    .range{appearance:none;inline-size:260px;height:10px;background:#271c2b;border-radius:999px;border:1px solid rgba(255,255,255,.12)}
+    .range::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;background:linear-gradient(90deg,var(--pink),var(--lav));box-shadow:0 0 0 2px rgba(0,0,0,.35);cursor:pointer}
+    .value{display:inline-block;min-width:44px;text-align:right;font-variant-numeric:tabular-nums;color:#fff;opacity:.85}
 
-  .btn{
-    background:linear-gradient(90deg,var(--pink),var(--lav));
-    color:#fff; font-weight:800; border:none; border-radius:10px;
-    padding:10px 14px; box-shadow:var(--glow); cursor:pointer
-  }
+    .select, .text, .color{background:#2a2030;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:8px 12px;font-weight:600}
+    .text{min-width:220px}
+    .color{padding:6px;width:48px;height:36px}
+    .btn{background:linear-gradient(90deg,var(--pink),var(--lav));color:#fff;font-weight:800;border:none;border-radius:10px;padding:10px 14px;box-shadow:var(--glow);cursor:pointer}
 
-  /* Footer label for small notes */
-  .eyebrow{ color:var(--muted); font-size:12px; letter-spacing:.25em; text-transform:uppercase; margin:0 0 12px }
-
-  /* Animations */
-  @keyframes kenburns{ 0%{transform:scale(1.04)} 100%{transform:scale(1.12) translate3d(1%,-1%,0)} }
-  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
-
-  /* Mobile tweaks */
-  @media (max-width:560px){
-    .range{ inline-size:100% }
-    .row{ grid-template-columns:1fr auto }
-    .tabs{ padding-top:6px }
-  }
-</style>
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    @media (max-width:560px){.range{inline-size:100%}}
+  </style>
 </head>
 <body>
   <div class="backdrop" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
-
   <div class="shell">
-    <header class="brand"><h1>KuromiWare • UI Preview</h1></header>
+    <header class="brand"><h1>KuromiWare Features</h1></header>
 
-    <!-- Tabs -->
     <nav class="tabs">
       <div class="tabbar" role="tablist" aria-label="KuromiWare tabs">
         <button class="tab active" data-tab="Combat" role="tab" aria-selected="true">Combat</button>
-        <button class="tab" data-tab="Visual" role="tab" aria-selected="false">Visual</button>
-        <button class="tab" data-tab="Silent" role="tab" aria-selected="false">Silent</button>
-        <button class="tab" data-tab="World" role="tab" aria-selected="false">World</button>
-        <button class="tab" data-tab="HUD" role="tab" aria-selected="false">HUD</button>
-        <button class="tab" data-tab="Misc" role="tab" aria-selected="false">Misc</button>
-        <button class="tab" data-tab="Whitelist" role="tab" aria-selected="false">Whitelist</button>
-        <button class="tab" data-tab="Settings" role="tab" aria-selected="false">Settings</button>
+        <button class="tab" data-tab="Silent" role="tab">Silent</button>
+        <button class="tab" data-tab="Visual" role="tab">Visual</button>
+        <button class="tab" data-tab="World" role="tab">World</button>
+        <button class="tab" data-tab="HUD" role="tab">HUD</button>
+        <button class="tab" data-tab="Misc" role="tab">Misc</button>
+        <button class="tab" data-tab="WL" role="tab">WL</button>
+        <button class="tab" data-tab="Settings" role="tab">Settings</button>
       </div>
     </nav>
 
-    <!-- CONTENT: Combat -->
+    <!-- Combat -->
     <section id="Combat" class="content active" role="tabpanel">
       <div class="grid">
         <div class="card">
           <p class="eyebrow">Aimbot</p><h3>Core</h3>
-
-          <div class="row">
-            <div class="label">Enabled</div>
-            <label class="switch">
-              <input type="checkbox"><span class="track"></span><span class="knob"></span>
-            </label>
-          </div>
-
-          <div class="row">
-            <div class="label">Hold RMB</div>
-            <label class="switch">
-              <input type="checkbox"><span class="track"></span><span class="knob"></span>
-            </label>
-          </div>
-
-          <div class="row">
-            <div class="label">Toggle Key</div>
+          <div class="row"><div class="label">Enabled</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Hold RMB</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Toggle Key</div>
             <select class="select"><option>Q</option><option>E</option><option>Mouse4</option></select>
           </div>
-
-          <div class="row">
-            <div class="label">FOV</div>
-            <input class="range" type="range" min="40" max="600" value="150">
+          <div class="row"><div class="label">FOV</div>
+            <input class="range" type="range" min="40" max="600" value="150" data-unit="">
+            <span class="value">150</span>
           </div>
-
-          <div class="row">
-            <div class="label">Smooth</div>
-            <input class="range" type="range" min="1" max="100" value="18">
+          <div class="row"><div class="label">Smooth</div>
+            <input class="range" type="range" min="1" max="100" value="18" data-unit="%">
+            <span class="value">18%</span>
           </div>
-
-          <div class="row">
-            <div class="label">Max Distance</div>
-            <input class="range" type="range" min="200" max="6000" value="1200">
+          <div class="row"><div class="label">Max Distance</div>
+            <input class="range" type="range" min="200" max="6000" value="1200" data-unit="">
+            <span class="value">1200</span>
           </div>
         </div>
 
         <div class="card">
           <p class="eyebrow">Aimbot</p><h3>Filters</h3>
-
           <div class="row"><div class="label">Team Check</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
           <div class="row"><div class="label">Wall Check</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
           <div class="row"><div class="label">Ignore Passive</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
-
           <div class="row"><div class="label">Target Part</div><select class="select"><option>Head</option><option>HumanoidRootPart</option></select></div>
-          <div class="row"><div class="label">Min HP to Lock</div><input class="range" type="range" min="0" max="100" value="1"></div>
-          <div class="row"><div class="label">Select Interval (ms)</div><input class="range" type="range" min="30" max="200" value="80"></div>
+          <div class="row"><div class="label">Min HP to Lock</div>
+            <input class="range" type="range" min="0" max="100" value="1" data-unit="">
+            <span class="value">1</span>
+          </div>
+          <div class="row"><div class="label">Select Interval</div>
+            <input class="range" type="range" min="30" max="200" value="80" data-unit="ms">
+            <span class="value">80ms</span>
+          </div>
         </div>
 
         <div class="card">
           <p class="eyebrow">Aimbot</p><h3>Prediction</h3>
           <div class="row"><div class="label">Velocity Prediction</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Bullet Speed</div><input class="range" type="range" min="100" max="1200" value="300"></div>
-          <div class="row"><div class="label">Lead Strength</div><input class="range" type="range" min="5" max="20" value="10"></div>
+          <div class="row"><div class="label">Bullet Speed</div>
+            <input class="range" type="range" min="100" max="1200" value="300" data-unit="">
+            <span class="value">300</span>
+          </div>
+          <div class="row"><div class="label">Lead Strength</div>
+            <input class="range" type="range" min="5" max="20" value="10" data-unit="">
+            <span class="value">10</span>
+          </div>
         </div>
 
         <div class="card">
@@ -269,23 +151,85 @@
         </div>
 
         <div class="card">
-          <h3>Insta Reload</h3>
+          <h3>Insta Reload (Speed)</h3>
           <div class="row"><div class="label">Enabled</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Reload Speed ×</div><input class="range" type="range" min="1" max="20" value="4"></div>
-          <div class="row"><div class="label">Cooldown (ms)</div><input class="range" type="range" min="100" max="1000" value="300"></div>
-          <div class="row"><div class="label">Scan Interval (ms)</div><input class="range" type="range" min="30" max="150" value="60"></div>
+          <div class="row"><div class="label">Reload Speed ×</div>
+            <input class="range" type="range" min="1" max="20" value="4" data-unit="×">
+            <span class="value">4×</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>IR | Advanced</h3>
+          <div class="row"><div class="label">Per-Reload Cooldown</div>
+            <input class="range" type="range" min="100" max="1000" value="300" data-unit="ms">
+            <span class="value">300ms</span>
+          </div>
+          <div class="row"><div class="label">Scan Interval</div>
+            <input class="range" type="range" min="30" max="150" value="60" data-unit="ms">
+            <span class="value">60ms</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- CONTENT: Visual -->
+    <!-- Silent -->
+    <section id="Silent" class="content" role="tabpanel">
+      <div class="grid">
+        <div class="card">
+          <p class="eyebrow">Silent Aim</p><h3>Core</h3>
+          <div class="row"><div class="label">Enabled</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Hold RMB</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Toggle Key</div><select class="select"><option>Q</option><option>E</option></select></div>
+          <div class="row"><div class="label">FOV</div>
+            <input class="range" type="range" min="40" max="600" value="100" data-unit="">
+            <span class="value">100</span>
+          </div>
+          <div class="row"><div class="label">Max Distance</div>
+            <input class="range" type="range" min="200" max="6000" value="1200" data-unit="">
+            <span class="value">1200</span>
+          </div>
+        </div>
+        <div class="card">
+          <p class="eyebrow">Silent Aim</p><h3>Filters</h3>
+          <div class="row"><div class="label">Team Check</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Wall Check</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Ignore Passive</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Target Part</div><select class="select"><option>Head</option><option>HumanoidRootPart</option></select></div>
+          <div class="row"><div class="label">Min HP to Lock</div>
+            <input class="range" type="range" min="0" max="100" value="1" data-unit="">
+            <span class="value">1</span>
+          </div>
+          <div class="row"><div class="label">Select Interval</div>
+            <input class="range" type="range" min="30" max="200" value="100" data-unit="ms">
+            <span class="value">100ms</span>
+          </div>
+        </div>
+        <div class="card">
+          <p class="eyebrow">Silent Aim</p><h3>Prediction</h3>
+          <div class="row"><div class="label">Velocity Prediction</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Bullet Speed</div>
+            <input class="range" type="range" min="100" max="1200" value="300" data-unit="">
+            <span class="value">300</span>
+          </div>
+          <div class="row"><div class="label">Lead Strength</div>
+            <input class="range" type="range" min="5" max="20" value="10" data-unit="">
+            <span class="value">10</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual -->
     <section id="Visual" class="content" role="tabpanel">
       <div class="grid">
         <div class="card">
           <p class="eyebrow">Players</p><h3>Core</h3>
           <div class="row"><div class="label">Enable ESP</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
           <div class="row"><div class="label">Performance</div><select class="select"><option>Auto</option><option>Fast</option><option>Max</option></select></div>
-          <div class="row"><div class="label">Max Distance</div><input class="range" type="range" min="200" max="6000" value="2500"></div>
+          <div class="row"><div class="label">Max Distance</div>
+            <input class="range" type="range" min="200" max="6000" value="2500" data-unit="">
+            <span class="value">2500</span>
+          </div>
           <div class="row"><div class="label">Fade by Distance</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
           <div class="row"><div class="label">Only Visible (LOS)</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
           <div class="row"><div class="label">Team Check</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
@@ -297,9 +241,15 @@
           <div class="row"><div class="label">Skeleton</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
           <div class="row"><div class="label">Box</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
           <div class="row"><div class="label">Corner Box</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Corner Length</div><input class="range" type="range" min="4" max="24" value="8"></div>
+          <div class="row"><div class="label">Corner Length</div>
+            <input class="range" type="range" min="4" max="24" value="8" data-unit="px">
+            <span class="value">8px</span>
+          </div>
           <div class="row"><div class="label">Fill Box</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Fill Alpha %</div><input class="range" type="range" min="5" max="80" value="15"></div>
+          <div class="row"><div class="label">Fill Alpha</div>
+            <input class="range" type="range" min="5" max="80" value="15" data-unit="%">
+            <span class="value">15%</span>
+          </div>
           <div class="row"><div class="label">Tracers</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
           <div class="row"><div class="label">Tracer Origin</div><select class="select"><option>Bottom</option><option>Center</option><option>Mouse</option></select></div>
           <div class="row"><div class="label">Name</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
@@ -310,9 +260,15 @@
         <div class="card">
           <h3>Item ESP</h3>
           <div class="row"><div class="label">Item ESP</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Text Color</div><input class="color" type="color" value="#ffc878"></div>
-          <div class="row"><div class="label">Item Size</div><input class="range" type="range" min="10" max="22" value="13"></div>
-          <div class="row"><div class="label">Offset Y</div><input class="range" type="range" min="8" max="28" value="14"></div>
+          <div class="row"><div class="label">Item Text Color</div><input class="color" type="color" value="#ffc878"></div>
+          <div class="row"><div class="label">Item Size</div>
+            <input class="range" type="range" min="10" max="22" value="13" data-unit="px">
+            <span class="value">13px</span>
+          </div>
+          <div class="row"><div class="label">Item Offset Y</div>
+            <input class="range" type="range" min="8" max="28" value="14" data-unit="px">
+            <span class="value">14px</span>
+          </div>
           <div class="row"><div class="label">Show When No Tool</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
         </div>
 
@@ -327,118 +283,170 @@
         <div class="card">
           <p class="eyebrow">Drones</p><h3>DroneModel ESP</h3>
           <div class="row"><div class="label">Enable Drone ESP</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Max Distance</div><input class="range" type="range" min="300" max="8000" value="3000"></div>
+          <div class="row"><div class="label">Max Distance</div>
+            <input class="range" type="range" min="300" max="8000" value="3000" data-unit="">
+            <span class="value">3000</span>
+          </div>
           <div class="row"><div class="label">Tracer</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
           <div class="row"><div class="label">Filled Box</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Fill Alpha %</div><input class="range" type="range" min="5" max="80" value="12"></div>
+          <div class="row"><div class="label">Fill Alpha</div>
+            <input class="range" type="range" min="5" max="80" value="12" data-unit="%">
+            <span class="value">12%</span>
+          </div>
           <div class="row"><div class="label">Drone Color</div><input class="color" type="color" value="#ffb43c"></div>
         </div>
       </div>
     </section>
 
-    <!-- CONTENT: Silent -->
-    <section id="Silent" class="content" role="tabpanel">
-      <div class="grid">
-        <div class="card">
-          <p class="eyebrow">Silent Aim</p><h3>Core</h3>
-          <div class="row"><div class="label">Enabled</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Hold RMB</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Toggle Key</div><select class="select"><option>Q</option><option>E</option></select></div>
-          <div class="row"><div class="label">FOV</div><input class="range" type="range" min="40" max="600" value="100"></div>
-          <div class="row"><div class="label">Max Distance</div><input class="range" type="range" min="200" max="6000" value="1200"></div>
-        </div>
-
-        <div class="card">
-          <p class="eyebrow">Silent Aim</p><h3>Filters & Prediction</h3>
-          <div class="row"><div class="label">Team Check</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Wall Check</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Ignore Passive</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Target Part</div><select class="select"><option>Head</option><option>HumanoidRootPart</option></select></div>
-          <div class="row"><div class="label">Min HP to Lock</div><input class="range" type="range" min="0" max="100" value="1"></div>
-          <div class="row"><div class="label">Select Interval (ms)</div><input class="range" type="range" min="30" max="200" value="100"></div>
-          <div class="row"><div class="label">Velocity Prediction</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Bullet Speed</div><input class="range" type="range" min="100" max="1200" value="300"></div>
-          <div class="row"><div class="label">Lead Strength</div><input class="range" type="range" min="5" max="20" value="10"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTENT: World -->
+    <!-- World -->
     <section id="World" class="content" role="tabpanel">
       <div class="grid">
         <div class="card">
-          <h3>World Mods</h3>
-          <div class="row"><div class="label">Fullbright</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Custom Time</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <h3>Fullbright</h3>
+          <div class="row"><div class="label">Enabled (lock)</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Brightness</div>
+            <input class="range" type="range" min="1" max="6" value="3" data-unit="">
+            <span class="value">3</span>
+          </div>
+          <div class="row"><div class="label">ClockTime</div>
+            <input class="range" type="range" min="0" max="24" value="14" data-unit="h">
+            <span class="value">14h</span>
+          </div>
+          <div class="row"><div class="label">No Shadows</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">No Fog</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+        </div>
+        <div class="card">
+          <h3>Camera FOV</h3>
+          <div class="row"><div class="label">FOV Lock</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">FOV</div>
+            <input class="range" type="range" min="40" max="120" value="80" data-unit="">
+            <span class="value">80</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- CONTENT: HUD -->
+    <!-- HUD -->
     <section id="HUD" class="content" role="tabpanel">
       <div class="grid">
         <div class="card">
-          <h3>HUD Options</h3>
-          <div class="row"><div class="label">Show FPS</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
-          <div class="row"><div class="label">Show Ping</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+          <h3>Header | Centered Banner</h3>
+          <div class="row"><div class="label">Show Header Bar</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Accent Pulse</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Accent Line</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Header Height</div>
+            <input class="range" type="range" min="24" max="50" value="34" data-unit="px"><span class="value">34px</span>
+          </div>
+          <div class="row"><div class="label">Header Alpha</div>
+            <input class="range" type="range" min="0" max="80" value="18" data-unit="%"><span class="value">18%</span>
+          </div>
+          <div class="row"><div class="label">Shadow Alpha</div>
+            <input class="range" type="range" min="0" max="80" value="35" data-unit="%"><span class="value">35%</span>
+          </div>
+          <div class="row"><div class="label">Auto Width</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Manual Width</div>
+            <input class="range" type="range" min="260" max="720" value="480" data-unit="px"><span class="value">480px</span>
+          </div>
+          <div class="row"><div class="label">Font Size</div>
+            <input class="range" type="range" min="12" max="20" value="15" data-unit="px"><span class="value">15px</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Header | Data Chips</h3>
+          <div class="row"><div class="label">Show FPS</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Show Ping</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Show Players</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Show Time</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Show Place Name</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Show Username</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+        </div>
+        <div class="card">
+          <h3>Crosshair</h3>
+          <div class="row"><div class="label">Enabled</div><label class="switch"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+          <div class="row"><div class="label">Gap</div><input class="range" type="range" min="3" max="24" value="7" data-unit="px"><span class="value">7px</span></div>
+          <div class="row"><div class="label">Length</div><input class="range" type="range" min="4" max="24" value="9" data-unit="px"><span class="value">9px</span></div>
+          <div class="row"><div class="label">Thickness</div><input class="range" type="range" min="10" max="40" value="15" data-unit=""><span class="value">15</span></div>
         </div>
       </div>
     </section>
 
-    <!-- CONTENT: Misc -->
+    <!-- Misc -->
     <section id="Misc" class="content" role="tabpanel">
       <div class="grid">
-        <div class="card">
-          <h3>Semigod</h3>
+        <div class="card"><h3>Semigod</h3>
           <div class="row"><div class="label">Enabled</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
         </div>
-        <div class="card">
-          <h3>Drone Silent Aim</h3>
+        <div class="card"><h3>Drone Silent Aim</h3>
           <div class="row"><div class="label">Enabled</div><label class="switch"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
         </div>
-        <div class="card">
-          <h3>Kill All</h3>
-          <div class="row"><div class="label">Execute</div><button class="btn">Run</button></div>
+        <div class="card"><h3>Kill All</h3>
+          <div class="row"><div class="label">Execute</div><button class="btn" type="button">Run</button></div>
           <p class="hint">Preview only — no game action.</p>
         </div>
       </div>
     </section>
 
-    <!-- CONTENT: Whitelist -->
-    <section id="Whitelist" class="content" role="tabpanel">
+    <!-- WL -->
+    <section id="WL" class="content" role="tabpanel">
       <div class="grid">
         <div class="card">
-          <h3>Whitelist Manager</h3>
-          <div class="row"><div class="label">User ID</div><input class="select" placeholder="Enter ID"></div>
-          <div class="row"><div class="label">Add</div><button class="btn">Add User</button></div>
+          <h3>Friends | Ignores</h3>
+          <div class="row"><div class="label">Player Name</div><input class="text" placeholder="Exact name" /></div>
+          <div class="row"><div class="label">Friends (Whitelist)</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button">Add</button><button class="btn" type="button">Remove</button></div>
+          </div>
+          <div class="row"><div class="label">Ignore List</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button">Add</button><button class="btn" type="button">Remove</button></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- CONTENT: Settings -->
+    <!-- Settings -->
     <section id="Settings" class="content" role="tabpanel">
       <div class="grid">
         <div class="card">
-          <h3>Theme</h3>
-          <div class="row"><div class="label">Accent A</div><input class="color" type="color" value="#ff8ad6"></div>
-          <div class="row"><div class="label">Accent B</div><input class="color" type="color" value="#c4a1ff"></div>
+          <h3>KuromiWare</h3>
+          <div class="row"><div class="label">Toggle UI</div>
+            <select class="select"><option>RightShift</option><option>F8</option><option>F10</option></select>
+          </div>
+          <div class="row"><div class="label">Unload</div><button class="btn" type="button">Unload</button></div>
+          <p class="hint">This preview is visual-only — no cheat logic is included.</p>
         </div>
       </div>
     </section>
   </div>
 
-<script>
-  // Tabs
-  document.querySelectorAll('.tab').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const id = btn.dataset.tab;
-      document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b===btn));
-      document.querySelectorAll('.content').forEach(c=>c.classList.toggle('active', c.id===id));
-      // Scroll content into view without jumping the sticky tabbar
-      const scroller = document.querySelector('.shell');
-      requestAnimationFrame(()=> window.scrollTo({top: scroller.offsetTop, behavior: 'smooth'}));
+  <script>
+    // Tab behavior
+    document.querySelectorAll('.tab').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const id = btn.dataset.tab;
+        document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b===btn));
+        document.querySelectorAll('.content').forEach(c=>c.classList.toggle('active', c.id===id));
+      });
     });
-  });
-</script>
+
+    // Range value mirrors
+    const format = (el, v)=>{
+      const unit = el.dataset.unit || '';
+      if(unit==='ms') return v+unit;
+      if(unit==='px') return v+unit;
+      if(unit==='%') return v+unit;
+      if(unit==='×') return v+unit;
+      if(unit==='h') return v+unit;
+      return v;
+    };
+    const updateValue = (input)=>{
+      const val = input.value;
+      const out = input.nextElementSibling;
+      if(out && out.classList.contains('value')) out.textContent = format(input, val);
+    };
+    document.querySelectorAll('input.range').forEach(r=>{
+      updateValue(r);
+      r.addEventListener('input',()=>updateValue(r));
+      r.addEventListener('change',()=>updateValue(r));
+    });
+  </script>
 </body>
 </html>
