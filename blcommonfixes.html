@@ -9,6 +9,7 @@
   <meta name="description" content="Common fixes for KuromiWare: antivirus, menu launch, DNS/login issues, and more." />
   <link rel="canonical" href="https://kuromiware.shop/commonfixes" />
 
+  <!-- OpenGraph -->
   <meta property="og:locale" content="en_US" />
   <meta property="og:site_name" content="KuromiWare" />
   <meta property="og:type" content="website" />
@@ -22,19 +23,20 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="KuromiWare — Common Fixes preview" />
 
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="KuromiWare — Common Fixes" />
   <meta name="twitter:description" content="Common fixes for KuromiWare: antivirus, menu launch, DNS/login issues, and more." />
   <meta name="twitter:image" content="https://kuromiware.shop/assets/og-commonfixes.png?v=2" />
 
-  <!-- (optional) help initial paint + embed fetch -->
+  <!-- Preload/Perf -->
   <link rel="preload" as="image" href="https://kuromiware.shop/assets/og-commonfixes.png?v=2" />
-
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* ⤵ Use the same image for your site background */
       --bg-url: url("https://kuromiware.shop/assets/og-commonfixes.png?v=2");
       --ink-2: #1a101c;
       --muted: #b8afc3;
@@ -47,6 +49,8 @@
       --glow: 0 10px 40px rgba(255,102,196,.25), 0 2px 12px rgba(196,161,255,.2);
       --radius-xl: 22px;
       --shadow-xl: 0 20px 60px rgba(0,0,0,.45);
+      --ring: rgba(255,255,255,.6);
+      --success: #7ef1c9;
     }
 
     *{ box-sizing:border-box }
@@ -62,6 +66,7 @@
       overflow-x:hidden;
     }
 
+    /* BACKDROP */
     .backdrop{ position:fixed; inset:0; z-index:-3; overflow:hidden; }
     .backdrop::before{
       content:""; position:absolute; inset:-4vmax;
@@ -80,6 +85,15 @@
     }
     @keyframes kenburns{ 0%{transform:scale(1.05)} 100%{transform:scale(1.12) translate3d(1%,-1%,0)} }
 
+    /* PROGRESS BAR */
+    .progress{
+      position:fixed; top:0; left:0; height:3px; width:0%;
+      background: linear-gradient(90deg, #ff73d9, #c4a1ff);
+      z-index:9999; box-shadow: 0 0 12px rgba(255,115,217,.6);
+      transition: width .08s linear;
+    }
+
+    /* TOP BAR */
     .bar{
       position:sticky; top:0; z-index:5;
       backdrop-filter: blur(10px) saturate(1.1);
@@ -89,7 +103,7 @@
     .bar-inner{
       max-width:1100px; margin:0 auto;
       display:flex; align-items:center; gap:14px;
-      padding:14px 20px;
+      padding:12px 20px;
     }
     .logo{
       display:flex; align-items:center; gap:10px;
@@ -107,8 +121,22 @@
     }
     @keyframes shimmer{ 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
 
+    .spacer{ flex:1 }
+    .search{
+      display:flex; align-items:center; gap:8px;
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      border-radius:12px; padding:6px 10px;
+      min-width: 220px;
+    }
+    .search input{
+      background:transparent; border:none; outline:none; color:#fff; width:180px;
+      font:600 13px/1 'Inter',system-ui;
+    }
+
     .wrap{ max-width:1100px; margin:0 auto; padding: clamp(18px, 4vw, 42px); }
 
+    /* LAYOUT CARD */
     .board{
       border:1px solid var(--stroke);
       border-radius:var(--radius-xl);
@@ -118,15 +146,42 @@
     }
     .board-head{
       display:flex; align-items:center; justify-content:space-between;
-      padding:18px 20px; border-bottom:1px solid var(--stroke);
+      gap: 12px;
+      padding:16px 18px; border-bottom:1px solid var(--stroke);
       background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+      flex-wrap: wrap;
     }
-    .board-head h2{
-      margin:0; font-size:22px; letter-spacing:.5px; font-weight:800;
-      color:#fff;
+    .board-title{
+      display:flex; align-items:center; gap:10px;
+    }
+    .board-title h2{
+      margin:0; font-size:22px; letter-spacing:.5px; font-weight:800; color:#fff;
     }
     .board-head .muted{ color:var(--muted); font-size:13px }
 
+    .board-tools{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .mini{
+      font:800 12px/1 'Inter',system-ui; letter-spacing:.12em; text-transform:uppercase;
+      padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.18);
+      color:#fff; background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      cursor:pointer;
+    }
+    .mini:hover{ filter: brightness(1.1); }
+
+    /* TOC */
+    .toc{
+      display:flex; flex-wrap:wrap; gap:8px; padding:12px 18px; border-bottom:1px dashed var(--stroke);
+    }
+    .toc a{
+      font:700 12px/1 'Inter',system-ui; color:#fff; text-decoration:none;
+      padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.18);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    }
+    .toc a:hover{ background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04)); }
+
+    /* THREADS */
     .thread{
       display:grid; grid-template-columns: 64px 1fr; gap:16px;
       padding:18px 20px;
@@ -144,6 +199,12 @@
       margin:0 0 6px 0; font-weight:800; font-size:18px; color:#fff;
       display:flex; align-items:center; gap:10px; flex-wrap:wrap;
     }
+    .t-title .anchor{
+      opacity:.7; font-weight:800; font-size:14px; text-decoration:none; color:#fff;
+      border:1px solid rgba(255,255,255,.18); border-radius:8px; padding:2px 6px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    }
+    .t-title .anchor:hover{ opacity:1 }
     .tag{
       font-size:11px; letter-spacing:.12em; text-transform:uppercase;
       padding:4px 8px; border-radius:8px;
@@ -153,32 +214,37 @@
     }
     .meta{ color:var(--muted); font-size:12.5px; margin-bottom:10px }
 
-    .post{
-      padding:14px; border:1px dashed var(--stroke);
+    /* COLLAPSIBLE POST */
+    details.post{
+      border:1px dashed var(--stroke);
       border-radius:14px; background:rgba(24,16,28,.35);
-      line-height:1.6;
-      --code-bg: rgba(0,0,0,.35);
+      padding:10px 12px;
     }
+    details.post[open]{ background:rgba(24,16,28,.42); }
+    details.post summary{
+      list-style:none; cursor:pointer; user-select:none; outline:none;
+      display:flex; align-items:center; gap:10px; font-weight:800; color:#fff;
+    }
+    details.post summary::-webkit-details-marker{ display:none }
+    .caret{ width:10px; height:10px; transform: rotate(0deg); transition: transform .2s ease; border: solid #fff; border-width: 0 2px 2px 0; display:inline-block; padding:3px; }
+    details.post[open] .caret{ transform: rotate(45deg); }
+
+    .post-content{ margin-top:10px; line-height:1.6; }
     .post h3, .post h4{ margin:12px 0 6px 0; }
     .post h3{ font-size:20px }
     .post h4{ font-size:16px }
     .post p{ margin:8px 0 }
     .post a{ color:#ffe1f6; text-decoration:none; border-bottom:1px dashed rgba(255,255,255,.35) }
-    .post a:hover{ text-decoration:none; border-bottom-color:#fff }
-    .sep{
-      font-weight:800; color:#fff; opacity:.8; letter-spacing:.08em;
-      display:inline-block; padding:6px 0;
-    }
+    .post a:hover{ border-bottom-color:#fff }
+    .sep{ font-weight:800; color:#fff; opacity:.8; letter-spacing:.08em; display:inline-block; padding:6px 0; }
     code, kbd{
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      background:var(--code-bg);
+      background:rgba(0,0,0,.35);
       border:1px solid rgba(255,255,255,.2);
-      border-radius:8px; padding:.15em .45em;
-      color:#fff;
+      border-radius:8px; padding:.15em .45em; color:#fff;
     }
     .tools{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px }
     .btn{
-      --ring: rgba(255,255,255,.45);
       display:inline-flex; align-items:center; gap:8px;
       padding:9px 12px; font-weight:800; letter-spacing:.2px; font-size:13px;
       border-radius:12px; border:1px solid rgba(255,255,255,.18);
@@ -190,17 +256,45 @@
     .btn:hover{ transform: translateY(-2px); box-shadow:0 14px 36px rgba(0,0,0,.45) }
     .btn:active{ transform: translateY(0) scale(.99) }
 
+    /* TOAST */
+    .toast{
+      position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%) translateY(20px);
+      background: rgba(24,16,28,.85); border:1px solid var(--stroke);
+      color:#fff; padding:10px 12px; border-radius:10px; box-shadow: var(--glow);
+      opacity:0; transition: opacity .2s ease, transform .2s ease;
+      font: 800 13px/1 'Inter',system-ui; letter-spacing:.2px;
+      z-index:10000;
+    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
     footer{
       text-align:center; color:var(--muted); font-size:12.5px;
       margin:20px 0 10px;
     }
 
+    .hidden{ display:none !important; }
+    mark{ background: rgba(255,138,214,.35); border-radius:6px; padding:0 .15em; }
+
     @media (prefers-reduced-motion: reduce){
       .backdrop::before{ animation:none !important }
     }
   </style>
+
+  <!-- Structured data (FAQ-ish) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Anti virus issues","acceptedAnswer":{"@type":"Answer","text":"Turn off real-time protection and tamper protection in Windows Security. See linked resources."}},
+      {"@type":"Question","name":"Failed to open menu","acceptedAnswer":{"@type":"Answer","text":"Back up mods and switch MelonLoader to version 0.7.1."}},
+      {"@type":"Question","name":"Can't login","acceptedAnswer":{"@type":"Answer","text":"Change DNS to 1.1.1.1 and 1.0.0.1 in IPv4 settings, then try a VPN."}}
+    ]
+  }
+  </script>
 </head>
 <body>
+  <div class="progress" id="progress"></div>
   <div class="backdrop" aria-hidden="true"></div>
 
   <header class="bar" role="banner">
@@ -211,101 +305,108 @@
         </svg>
         <h1>KuromiWare — Common Fixes</h1>
       </div>
+      <div class="spacer"></div>
+      <label class="search" aria-label="Search fixes">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8L20 21.5 21.5 20l-6-6zM10.5 15A4.5 4.5 0 1 1 15 10.5 4.5 4.5 0 0 1 10.5 15z" fill="#fff"/></svg>
+        <input id="q" type="search" placeholder="Search fixes…" autocomplete="off" />
+      </label>
     </div>
   </header>
 
   <main class="wrap" role="main">
     <section class="board" aria-labelledby="board-title">
       <div class="board-head">
-        <h2 id="board-title"></h2>
-        <span class="muted"></span>
+        <div class="board-title">
+          <h2 id="board-title">Common Fixes</h2>
+          <span class="muted" id="count"></span>
+        </div>
+        <div class="board-tools">
+          <button class="mini" id="expandAll">Expand all</button>
+          <button class="mini" id="collapseAll">Collapse all</button>
+          <button class="mini" id="clearSearch" title="Clear search">Clear</button>
+        </div>
       </div>
 
-      <article class="thread" aria-labelledby="t1">
+      <!-- TOC generated from threads -->
+      <nav class="toc" id="toc" aria-label="On this page"></nav>
+
+      <!-- THREADS -->
+      <article class="thread" id="t1" data-title="Anti virus issues" data-tags="guide antivirus windows defender">
         <div class="avatar" aria-hidden="true"></div>
         <div class="t-body">
-          <h3 class="t-title" id="t1">Anti virus issues <span class="tag">Guide</span></h3>
+          <h3 class="t-title">Anti virus issues <span class="tag">Guide</span> <a class="anchor" href="#t1" aria-label="Section link">#</a></h3>
           <div class="meta"></div>
-          <div class="post">
-            <h3>Anti virus issues</h3>
 
-            <p class="sep"><strong>-------------------------------------------------</strong></p>
+          <details class="post" open>
+            <summary><span class="caret"></span> <strong>View steps</strong></summary>
+            <div class="post-content">
+              <h3>Anti virus issues</h3>
+              <p class="sep"><strong>-------------------------------------------------</strong></p>
+              <h4>DO NOT SKIP STEPS!</h4>
+              <p>turn off <strong>real time protection</strong> under (virus and threat protection)<br>and <strong>tamper protection</strong></p>
+              <p><a href="https://www.youtube.com/watch?v=KY0ReW1qMgs&t=75s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=KY0ReW1qMgs&amp;t=75s</a></p>
+              <p><a href="https://www.sordum.org/files/downloads.php?st-defender-control" target="_blank" rel="noopener">https://www.sordum.org/files/downloads.php?st-defender-control</a></p>
+              <p>password: <code>sordum</code></p>
 
-            <h4>DO NOT SKIP STEPS!</h4>
+              <div class="tools">
+                <button class="btn" data-copy="https://www.youtube.com/watch?v=KY0ReW1qMgs&t=75s">Copy YouTube link</button>
+                <button class="btn" data-copy="https://www.sordum.org/files/downloads.php?st-defender-control">Copy Sordum link</button>
+                <button class="btn" data-copy="sordum">Copy password</button>
+              </div>
 
-            <p>turn off <strong>real time protection</strong> under (virus and threat protection)<br>
-            and <strong>tamper protection</strong></p>
-
-            <p><a href="https://www.youtube.com/watch?v=KY0ReW1qMgs&t=75s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=KY0ReW1qMgs&amp;t=75s</a></p>
-
-            <p><a href="https://www.sordum.org/files/downloads.php?st-defender-control" target="_blank" rel="noopener">https://www.sordum.org/files/downloads.php?st-defender-control</a></p>
-
-            <p>password: <code>sordum</code></p>
-
-            <div class="tools">
-              <button class="btn" data-copy="https://www.youtube.com/watch?v=KY0ReW1qMgs&t=75s">Copy YouTube link</button>
-              <button class="btn" data-copy="https://www.sordum.org/files/downloads.php?st-defender-control">Copy Sordum link</button>
-              <button class="btn" data-copy="sordum">Copy password</button>
+              <p style="margin-top:12px; color:#ffddddb3;"><em></em></p>
             </div>
-
-            <p style="margin-top:12px; color:#ffddddb3;"><em></em></p>
-          </div>
+          </details>
         </div>
       </article>
 
-      <article class="thread" aria-labelledby="t2">
+      <article class="thread" id="t2" data-title="Failed to open menu" data-tags="fix melonloader version mods">
         <div class="avatar" aria-hidden="true"></div>
         <div class="t-body">
-          <h3 class="t-title" id="t2">Failed to open menu <span class="tag">Fix</span></h3>
+          <h3 class="t-title">Failed to open menu <span class="tag">Fix</span> <a class="anchor" href="#t2" aria-label="Section link">#</a></h3>
           <div class="meta"></div>
-          <div class="post">
-            <h3>Failed to open menu</h3>
 
-            <p class="sep"><strong>-------------------------------------------------</strong></p>
-
-            <p><strong>BACK UP MODS!</strong></p>
-
-            <p>then change melon loader version to <strong>0.7.1</strong></p>
-          </div>
+          <details class="post" open>
+            <summary><span class="caret"></span> <strong>View steps</strong></summary>
+            <div class="post-content">
+              <h3>Failed to open menu</h3>
+              <p class="sep"><strong>-------------------------------------------------</strong></p>
+              <p><strong>BACK UP MODS!</strong></p>
+              <p>then change melon loader version to <strong>0.7.1</strong></p>
+            </div>
+          </details>
         </div>
       </article>
 
-      <article class="thread" aria-labelledby="t3">
+      <article class="thread" id="t3" data-title="Cant login" data-tags="network dns ipv4 vpn">
         <div class="avatar" aria-hidden="true"></div>
         <div class="t-body">
-          <h3 class="t-title" id="t3">Cant login <span class="tag">Network</span></h3>
+          <h3 class="t-title">Cant login <span class="tag">Network</span> <a class="anchor" href="#t3" aria-label="Section link">#</a></h3>
           <div class="meta"></div>
-          <div class="post">
-            <h3>Cant login</h3>
 
-            <p class="sep"><strong>-------------------------------------------------</strong></p>
+          <details class="post" open>
+            <summary><span class="caret"></span> <strong>View steps</strong></summary>
+            <div class="post-content">
+              <h3>Cant login</h3>
+              <p class="sep"><strong>-------------------------------------------------</strong></p>
 
-            <p>go to <em>control panel</em> (windows)</p>
+              <p>go to <em>control panel</em> (windows)</p>
+              <p>then proceed to <em>network and internet</em></p>
+              <p>then <em>network and sharing center</em></p>
+              <p>then <em>change adapter settings</em></p>
+              <p>then choose what ever you use | <em>Ethernet or Wi-Fi</em> |</p>
+              <p>right click either one and choose properties</p>
+              <p>then click <em>internet protocal version 4 (tcp/ipv4)</em></p>
+              <p>then click properties and choose "Use the following dns server adresses"</p>
+              <p>change preferred to: 1.1.1.1<br>change alternate to: 1.0.0.1</p>
+              <p>then use a vpn</p>
 
-            <p>then proceed to <em>network and internet</em></p>
-
-            <p>then <em>network and sharing center</em></p>
-
-            <p>then <em>change adapter settings</em></p>
-
-            <p>then choose what ever you use | <em>Ethernet or Wi-Fi</em> |</p>
-
-            <p>right click either one and choose properties</p>
-
-            <p>then click <em>internet protocal version 4 (tcp/ipv4)</em></p>
-
-            <p>then click properties and choose "Use the following dns server adresses"</p>
-
-            <p>change preferred to: 1.1.1.1<br>
-            change alternate to: 1.0.0.1</p>
-
-            <p>then use a vpn</p>
-
-            <div class="tools">
-              <button class="btn" data-copy="1.1.1.1">Copy preferred DNS</button>
-              <button class="btn" data-copy="1.0.0.1">Copy alternate DNS</button>
+              <div class="tools">
+                <button class="btn" data-copy="1.1.1.1">Copy preferred DNS</button>
+                <button class="btn" data-copy="1.0.0.1">Copy alternate DNS</button>
+              </div>
             </div>
-          </div>
+          </details>
         </div>
       </article>
     </section>
@@ -313,17 +414,134 @@
     <footer>© <span id="year"></span> KuromiWare</footer>
   </main>
 
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <script>
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
+    // Copy buttons with toast
+    const toast = document.getElementById('toast');
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(()=> toast.classList.remove('show'), 1100);
+    }
     document.querySelectorAll('.btn[data-copy]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const txt = btn.getAttribute('data-copy');
-        navigator.clipboard.writeText(txt).then(()=>{
-          const prev = btn.textContent;
-          btn.textContent = 'Copied!';
-          setTimeout(()=> btn.textContent = prev, 900);
+        navigator.clipboard.writeText(txt).then(()=> showToast('Copied ✓'));
+      });
+    });
+
+    // Reading progress
+    const progress = document.getElementById('progress');
+    function updateProgress(){
+      const h = document.documentElement;
+      const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+      progress.style.width = (scrolled * 100).toFixed(2) + '%';
+    }
+    document.addEventListener('scroll', updateProgress, { passive:true });
+    updateProgress();
+
+    // Count + TOC
+    const threads = [...document.querySelectorAll('.thread')];
+    const count = document.getElementById('count');
+    const toc = document.getElementById('toc');
+    function rebuildTOC(list){
+      toc.innerHTML = '';
+      list.forEach(a=>{
+        const t = a.querySelector('.t-title').firstChild.textContent.trim();
+        const id = a.id;
+        const link = document.createElement('a');
+        link.href = '#' + id; link.textContent = t;
+        toc.appendChild(link);
+      });
+    }
+    count.textContent = `${threads.length} guides`;
+    rebuildTOC(threads);
+
+    // Expand/Collapse all
+    const expandAll = document.getElementById('expandAll');
+    const collapseAll = document.getElementById('collapseAll');
+    expandAll.addEventListener('click', ()=> {
+      document.querySelectorAll('details.post').forEach(d => d.open = true);
+    });
+    collapseAll.addEventListener('click', ()=> {
+      document.querySelectorAll('details.post').forEach(d => d.open = false);
+    });
+
+    // Search (title + body); highlights results
+    const q = document.getElementById('q');
+    const clearSearch = document.getElementById('clearSearch');
+    function normalize(s){ return s.toLowerCase(); }
+    function highlight(el, term){
+      // remove old marks
+      el.querySelectorAll('mark').forEach(m=>{
+        const t = document.createTextNode(m.textContent);
+        m.replaceWith(t);
+      });
+      if(!term) return;
+      const rx = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'ig');
+      for (const node of el.querySelectorAll('h3, h4, p, code')){
+        node.childNodes.forEach(n=>{
+          if(n.nodeType === 3 && rx.test(n.textContent)){
+            const frag = document.createDocumentFragment();
+            let lastIndex = 0; n.textContent.replace(rx, (m, idx)=>{
+              const a = document.createTextNode(n.textContent.slice(lastIndex, idx));
+              const mark = document.createElement('mark'); mark.textContent = m;
+              frag.appendChild(a); frag.appendChild(mark);
+              lastIndex = idx + m.length; return m;
+            });
+            frag.appendChild(document.createTextNode(n.textContent.slice(lastIndex)));
+            n.replaceWith(frag);
+          }
         });
+      }
+    }
+    function filter(){
+      const term = normalize(q.value.trim());
+      let visible = 0;
+      threads.forEach(th=>{
+        const title = th.dataset.title || '';
+        const tags = th.dataset.tags || '';
+        const body = th.querySelector('.post-content')?.innerText || '';
+        const hay = normalize(title + ' ' + tags + ' ' + body);
+        const match = !term || hay.includes(term);
+        th.classList.toggle('hidden', !match);
+        if (match) {
+          visible++;
+          highlight(th, term);
+          // auto-open when matched
+          th.querySelectorAll('details.post').forEach(d => { if (term) d.open = true; });
+        } else {
+          // clean highlights in hidden nodes too
+          highlight(th, '');
+        }
+      });
+      count.textContent = `${visible} guide${visible===1?'':'s'}`;
+      rebuildTOC(threads.filter(th=>!th.classList.contains('hidden')));
+    }
+    q.addEventListener('input', filter);
+    clearSearch.addEventListener('click', ()=> { q.value=''; filter(); });
+
+    // Smooth anchor scrolling offset for sticky bar
+    function smoothScrollTo(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      const y = el.getBoundingClientRect().top + window.scrollY - 70;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+    if (location.hash) setTimeout(()=> smoothScrollTo(location.hash.slice(1)), 10);
+    window.addEventListener('hashchange', ()=> smoothScrollTo(location.hash.slice(1)));
+
+    // Anchor copy (clicking the # badge copies link)
+    document.querySelectorAll('.t-title .anchor').forEach(a=>{
+      a.addEventListener('click', e=>{
+        e.preventDefault();
+        const url = `${location.origin}${location.pathname}${a.getAttribute('href')}`;
+        navigator.clipboard.writeText(url).then(()=> showToast('Link copied ✓'));
+        history.pushState(null,'',a.getAttribute('href'));
       });
     });
   </script>
