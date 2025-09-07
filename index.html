@@ -11,17 +11,18 @@
   <style>
     :root{
       --bg-url: url("https://motionbgs.com/media/1730/sweet-and-spooky-kuromi.jpg");
-      --ink-2: #1a101c;
-      --muted: #b8afc3;
-      --panel: rgba(24,16,28,.48);
-      --panel-strong: rgba(24,16,28,.68);
-      --stroke: rgba(255,255,255,.14);
+      --ink-2: #110b12;
+      --muted: #c7bdda;
+      --panel: rgba(20,14,24,.55);
+      --panel-strong: rgba(20,14,24,.72);
+      --stroke: rgba(255,255,255,.12);
       --white: #f7f6f9;
       --pink: #ff8ad6;
       --lav: #c4a1ff;
-      --glow: 0 10px 40px rgba(255,102,196,.25), 0 2px 12px rgba(196,161,255,.2);
-      --radius-xl: 24px;
-      --shadow-xl: 0 20px 60px rgba(0,0,0,.45);
+      --ring: rgba(255,255,255,.5);
+      --glow: 0 16px 60px rgba(255,102,196,.25), 0 6px 24px rgba(196,161,255,.18);
+      --shadow-xl: 0 25px 80px rgba(0,0,0,.55);
+      --radius-xl: 26px;
     }
 
     * { box-sizing: border-box; }
@@ -37,54 +38,62 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Background with blend + Ken Burns + grain */
-    .backdrop{ position: fixed; inset: 0; z-index: -3; overflow: hidden; }
+    /* ---------- BACKGROUND LAYERS ---------- */
+    .backdrop{ position: fixed; inset: 0; z-index: -4; overflow: hidden; }
     .backdrop::before{
-      content:""; position:absolute; inset:-4vmax;
+      content:""; position:absolute; inset:-6vmax;
       background:
-        radial-gradient(1200px 800px at 80% 10%, rgba(255,138,214,.30), transparent 60%),
-        radial-gradient(1200px 800px at 10% 90%, rgba(196,161,255,.24), transparent 60%),
+        radial-gradient(1200px 800px at 85% 8%, rgba(255,138,214,.30), transparent 60%),
+        radial-gradient(1200px 800px at 10% 90%, rgba(196,161,255,.26), transparent 60%),
         var(--bg-url) center / cover no-repeat fixed;
-      filter: saturate(1.05) contrast(1.05) brightness(.92);
-      transform: scale(1.04);
+      filter: saturate(1.06) contrast(1.06) brightness(.95);
+      transform: scale(1.06);
       animation: kenburns 32s ease-in-out infinite alternate;
+      will-change: transform;
     }
     .backdrop::after{
       content:""; position:absolute; inset:0;
       background:
-        radial-gradient(1200px 800px at 50% 10%, rgba(0,0,0,.34), transparent 60%),
-        linear-gradient(180deg, rgba(10,6,12,.45), rgba(10,6,12,.68) 40%, rgba(10,6,12,.88));
+        radial-gradient(1200px 800px at 50% 0%, rgba(0,0,0,.35), transparent 60%),
+        linear-gradient(180deg, rgba(10,6,12,.4), rgba(10,6,12,.75) 50%, rgba(10,6,12,.92));
       mix-blend-mode: multiply; pointer-events: none;
     }
-    .grain{ position: fixed; inset:0; z-index:-2; pointer-events:none; opacity:.08;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
-      animation: drift 16s linear infinite alternate; }
 
-    /* Floating sparkles (pure CSS shapes) */
-    .particles{ position: fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; }
-    .sparkle{
-      position:absolute; width:6px; height:6px; border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, #fff, rgba(255,102,196,.8) 60%, rgba(196,161,255,.6));
-      box-shadow: 0 0 10px rgba(255,102,196,.6), 0 0 20px rgba(196,161,255,.4);
-      opacity:.0; transform: translateY(20vh) scale(.8);
-      animation: rise var(--dur) linear var(--delay) infinite, twinkle 3s ease-in-out var(--delay) infinite;
+    /* Film grain */
+    .grain{ position: fixed; inset:0; z-index:-2; pointer-events:none; opacity:.07;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+      animation: drift 18s linear infinite alternate; }
+
+    /* Aurora ribbon */
+    .aurora{ position: fixed; inset:0; z-index:-1; pointer-events:none; }
+    .aurora::before{
+      content:""; position:absolute; inset:-30% -10% -20% -10%;
+      background:
+        radial-gradient(60% 120% at 40% 40%, rgba(255,138,214,.18), transparent 60%),
+        radial-gradient(50% 120% at 60% 60%, rgba(196,161,255,.15), transparent 60%);
+      filter: blur(60px) saturate(1.2);
+      animation: auroraMove 20s ease-in-out infinite alternate;
     }
 
-    /* Top-right shimmering brand */
+    /* Canvas particles */
+    #fx{
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    }
+
+    /* ---------- BRAND ---------- */
     .brand{
       position: fixed;
-      top: clamp(10px, 2.2vw, 20px);
-      right: clamp(10px, 2.2vw, 20px);
+      top: clamp(10px, 2.2vw, 22px);
+      right: clamp(10px, 2.2vw, 22px);
       z-index: 10;
       padding: 10px 14px;
       border-radius: 14px;
       border: 1px solid var(--stroke);
       background: linear-gradient(180deg, rgba(24,16,28,.55), rgba(24,16,28,.35));
-      backdrop-filter: blur(10px) saturate(1.1);
+      backdrop-filter: blur(10px) saturate(1.05);
       box-shadow: var(--glow), var(--shadow-xl);
       display:flex; align-items:center; gap:10px;
       user-select: none;
-      transform: translateZ(0);
       transition: transform .4s ease;
     }
     .brand:hover{ transform: translateY(-2px); }
@@ -95,34 +104,36 @@
       -webkit-background-clip: text; background-clip: text; color: transparent;
       text-shadow: 0 6px 30px rgba(255,102,196,.25);
       white-space: nowrap;
-      background-size: 200% 100%;
+      background-size: 220% 100%;
       animation: shimmer 8s linear infinite;
     }
 
-    .wrap{ max-width: 1100px; margin: 0 auto; padding: clamp(18px, 4vw, 48px); }
-    .hero{ margin-top: clamp(60px, 12vh, 160px); max-width: 760px; perspective: 1000px; }
+    /* ---------- HERO ---------- */
+    .wrap{ max-width: 1200px; margin: 0 auto; padding: clamp(18px, 4vw, 48px); }
+    .hero{
+      min-height: 72vh;
+      display: grid; place-items: center;
+      text-align: center;
+      margin-top: clamp(30px, 6vh, 100px);
+      perspective: 1000px;
+    }
 
-    /* Animated glass card */
-    .card{
-      position: relative; border-radius: var(--radius-xl);
+    .logo-stack{
+      position: relative;
+      display: inline-block;
+      padding: clamp(16px, 3vw, 28px) clamp(22px, 4vw, 40px);
+      border-radius: var(--radius-xl);
       background: linear-gradient(180deg, var(--panel), var(--panel-strong));
-      border: 1px solid transparent;
+      border: 1px solid rgba(255,255,255,.12);
       box-shadow: var(--shadow-xl), var(--glow);
       backdrop-filter: blur(10px) saturate(1.08);
-      padding: clamp(18px, 3vw, 28px); overflow: hidden;
       transform-style: preserve-3d;
-      transform: rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);
-      transition: transform .3s ease, box-shadow .4s ease;
-      opacity: 0; transform-origin: center;
-      animation: cardReveal .9s cubic-bezier(.2,.7,.2,1) .2s forwards;
+      transition: transform .25s ease;
+      will-change: transform;
+      isolation: isolate;
     }
-    .card::before{
-      content:""; position:absolute; inset:-40%;
-      background: conic-gradient(from 0deg, rgba(255,138,214,.08), rgba(196,161,255,.10), rgba(255,255,255,.05), rgba(255,138,214,.08));
-      filter: blur(18px); mix-blend-mode: screen;
-      animation: spin 16s linear infinite;
-    }
-    .card::after{
+    /* rotating halo border */
+    .logo-stack::after{
       content:""; position:absolute; inset:0; border-radius: inherit; padding:1px;
       background: conic-gradient(from var(--angle,0deg), #ffffff33, #ff8ad666, #c4a1ff66, #ffffff33);
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -131,51 +142,55 @@
       animation: borderSpin 12s linear infinite;
       pointer-events:none;
     }
-    .card:hover{ box-shadow: 0 30px 80px rgba(0,0,0,.55), var(--glow); }
 
-    .eyebrow{
-      font-size: 12px; letter-spacing: .28em; text-transform: uppercase;
-      color: var(--muted); margin: 0 0 10px; opacity:.85;
-      animation: fadeSlide .8s ease .45s both;
+    .title{
+      margin:0;
+      font-weight: 800;
+      font-size: clamp(36px, 8.6vw, 92px);
+      letter-spacing: .4px;
+      line-height: .95;
+      background: radial-gradient(120% 120% at 30% 40%, #fff 0%, #ffe8f9 50%, #e7dbff 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: 0 10px 60px rgba(255,102,196,.18);
+      transform: translateZ(40px);
     }
-    h2{
-      margin: 0 0 8px; font-size: clamp(28px, 5vw, 40px); line-height: 1.08; font-weight: 800;
-      background: linear-gradient(90deg, #fff 0%, #fff 60%, #ffe1f6 100%);
-      -webkit-background-clip:text; background-clip:text; color: transparent;
-      text-shadow: 0 6px 30px rgba(255,102,196,.15);
-      background-size: 150% 100%;
-      animation: titleSweep 2.6s cubic-bezier(.2,.7,.2,1) .35s both;
+    .subtitle{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: clamp(14px, 2.4vw, 18px);
+      transform: translateZ(30px);
     }
-    p{ margin: 10px 0; color: #efe8f4; animation: fadeSlide .8s ease .55s both; }
-    .muted{ color: var(--muted); }
 
-    footer{ margin: clamp(20px, 4vw, 40px) 0 10px; text-align:center; color: var(--muted); font-size: 12.5px; opacity:.9; }
+    /* subtle sheen across the title block */
+    .sheen{
+      pointer-events:none; position:absolute; inset:-1px; border-radius: inherit;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+      transform: translateZ(50px) translateX(-120%);
+      animation: sweep 4.8s ease-in-out 1.2s infinite;
+      mix-blend-mode: screen;
+    }
 
-    /* CTA Dock (Discord + Buy + Features) */
+    footer{ margin: clamp(18px, 4vw, 40px) 0 8px; text-align:center; color: var(--muted); font-size: 12.5px; opacity:.9; }
+
+    /* ---------- CTA (Discord only) ---------- */
     .cta-dock{
       position: fixed;
       right: clamp(14px, 3vw, 24px);
       bottom: calc(clamp(14px, 3vw, 24px) + env(safe-area-inset-bottom, 0px));
       z-index: 12;
-      display: flex;
-      gap: 10px;
-      padding: 8px;
+      display: flex; gap: 10px;
+      padding: 10px;
       border-radius: 16px;
       border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(24,16,28,.6), rgba(24,16,28,.38));
+      background: linear-gradient(180deg, rgba(24,16,28,.62), rgba(24,16,28,.4));
       backdrop-filter: blur(10px) saturate(1.1);
       box-shadow: var(--glow), var(--shadow-xl);
       animation: dockIn .8s cubic-bezier(.2,.7,.2,1) .3s both;
-      flex-wrap: wrap;
-    }
-    @keyframes dockIn{
-      0%{ opacity:0; transform: translateY(12px) scale(.98); }
-      100%{ opacity:1; transform: translateY(0) scale(1); }
     }
     .cta{
-      --ring: rgba(255,255,255,.45);
       display:inline-flex; align-items:center; gap:8px;
-      padding: 10px 14px;
+      padding: 12px 16px;
       font-weight: 800; letter-spacing:.2px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,.18);
@@ -185,68 +200,38 @@
       position: relative; overflow: hidden;
     }
     .cta svg{ width: 18px; height: 18px; flex: 0 0 18px; }
-    .cta:focus-visible{
-      outline: 2px solid var(--ring);
-      outline-offset: 2px;
-    }
+    .cta:focus-visible{ outline: 2px solid var(--ring); outline-offset: 2px; }
     .cta:hover{ transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 36px rgba(0,0,0,.45); }
     .cta:active{ transform: translateY(0) scale(.99); }
-
-    .cta.discord{
-      background: linear-gradient(90deg, #5865F2 0%, #8EA1E1 100%);
-    }
-    .cta.buy{
-      background: linear-gradient(90deg, #ff73d9 0%, #c4a1ff 100%);
-    }
-    .cta.features{
-      background: linear-gradient(90deg, #c4a1ff 0%, #ff8ad6 100%);
-    }
-    /* subtle ripple press */
+    .cta.discord{ background: linear-gradient(90deg, #5865F2 0%, #8EA1E1 100%); }
     .cta::after{
-      content:""; position:absolute; inset:0; background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,.25), transparent 40%);
+      content:""; position:absolute; inset:0;
+      background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,.25), transparent 40%);
       opacity:0; transition: opacity .25s ease;
     }
-    .cta:active::after{ opacity:.8; transition: opacity .05s ease; }
+    .cta:active::after{ opacity:.85; transition: opacity .05s ease; }
 
-    /* Keyframes */
+    /* ---------- ANIMATIONS ---------- */
     @keyframes kenburns{ 0%{transform:scale(1.04)} 100%{transform:scale(1.12) translate3d(1%,-1%,0)} }
     @keyframes drift{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-2%,2%,0)} }
-    @keyframes shimmer{ 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
-    @keyframes spin{ to{ transform: rotate(1turn); } }
+    @keyframes shimmer{ 0%{background-position:0% 50%} 100%{background-position:220% 50%} }
     @keyframes borderSpin{ to{ --angle: 360deg; } }
-    @keyframes cardReveal{
-      0%{ opacity:0; transform: translateY(18px) rotateX(2deg) rotateY(-2deg); }
-      100%{ opacity:1; transform: translateY(0) rotateX(var(--rx,0)) rotateY(var(--ry,0)); }
-    }
-    @keyframes fadeSlide{
-      0%{ opacity:0; transform: translateY(8px); }
-      100%{ opacity:1; transform: translateY(0); }
-    }
-    @keyframes titleSweep{
-      0%{ background-position: 120% 0; letter-spacing: .2px; opacity:.0; transform: translateY(8px); }
-      100%{ background-position: 0 0; letter-spacing: .5px; opacity:1; transform: translateY(0); }
-    }
-    @keyframes rise{
-      0%{ opacity:0; transform: translateY(20vh) scale(.8); }
-      10%,70%{ opacity:.9; }
-      100%{ opacity:0; transform: translateY(-120vh) scale(1.1); }
-    }
-    @keyframes twinkle{
-      0%,100%{ filter: brightness(1); }
-      50%{ filter: brightness(1.4); }
+    @keyframes dockIn{ 0%{ opacity:0; transform: translateY(12px) scale(.98);} 100%{ opacity:1; transform: translateY(0) scale(1);} }
+    @keyframes sweep{
+      0%{ transform: translateZ(50px) translateX(-120%) skewX(-10deg);}
+      45%,55%{ transform: translateZ(50px) translateX(120%) skewX(-10deg);}
+      100%{ transform: translateZ(50px) translateX(120%) skewX(-10deg);}
     }
 
-    /* Respect reduced motion */
+    /* Reduced motion support */
     @media (prefers-reduced-motion: reduce){
-      .backdrop::before, .grain, .sparkle, .brand h1, .card, .card::before, .card::after,
-      .eyebrow, h2, p, .cta-dock { animation: none !important; }
-      .card{ opacity:1; transform:none; }
+      .backdrop::before, .grain, .aurora::before, #fx, .brand h1, .logo-stack::after, .sheen, .cta-dock { animation: none !important; }
+      .logo-stack, .title, .subtitle { transform: none !important; }
     }
 
-    /* Mobile: let CTAs wrap nicely */
-    @media (max-width: 480px){
-      .cta-dock{ gap:8px; padding:6px; }
-      .cta{ padding:10px 12px; font-weight:700; }
+    /* Mobile tweaks */
+    @media (max-width: 520px){
+      .logo-stack{ padding: 18px 20px; }
     }
   </style>
 </head>
@@ -254,111 +239,41 @@
   <!-- Background layers -->
   <div class="backdrop" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
-  <div class="particles" aria-hidden="true" id="particles"></div>
+  <div class="aurora" aria-hidden="true"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
 
-  <!-- Top-right title -->
-  <div class="brand" aria-label="Site title" id="brand">
+  <!-- Top-right brand -->
+  <div class="brand" id="brand">
     <h1>KuromiWare v1</h1>
   </div>
 
   <!-- Content -->
   <main class="wrap">
     <section class="hero">
-      <article class="card tilt" aria-labelledby="about-title" id="about-card">
-        <p class="eyebrow">About</p>
-        <h2 id="about-title">What is KuromiWare?</h2>
-
-        <p><span class="muted">KuromiWare!!</span> — The best town script frfr</p>
-        <p>Has all the goodies</p>
-        <p class="muted">Have a good day!</p>
-      </article>
-
+      <div class="logo-stack" id="tilt">
+        <h2 class="title">KuromiWare</h2>
+        <p class="subtitle">This is the homepage for Kuromi!</p>
+        <span class="sheen"></span>
+      </div>
       <footer>© <span id="year"></span> KuromiWare</footer>
     </section>
   </main>
 
-  <!-- CTA Dock -->
+  <!-- CTA Dock (Discord only) -->
   <nav class="cta-dock" aria-label="Quick actions">
-    <!-- Discord -->
     <a class="cta discord" href="https://discord.gg/KYT59FhvV9" aria-label="Join the KuromiWare Discord">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path fill="#fff" d="M19.54 5.34a16.6 16.6 0 0 0-4.06-1.26c-.17.31-.37.73-.5 1.06a15.16 15.16 0 0 0-5.94 0c-.13-.34-.33-.75-.5-1.06-1.42.26-2.78.7-4.06 1.26C2.67 9.07 1.98 12.7 2.2 16.28a16.4 16.4 0 0 0 5 2.52c.4-.55.75-1.13 1.05-1.75-.58-.22-1.13-.48-1.65-.79.14-.1.28-.2.42-.31a11.46 11.46 0 0 0 10.96 0c.14.11.28.21.42.31-.52.31-1.07.57-1.65.79.3.62.65 1.2 1.05 1.75a16.4 16.4 0 0 0 5-2.52c.26-4.03-.45-7.63-2.78-10.94ZM9.5 14.5c-.78 0-1.41-.73-1.41-1.62 0-.9.63-1.62 1.41-1.62s1.42.72 1.42 1.62c0 .89-.64 1.62-1.42 1.62Zm5 0c-.78 0-1.41-.73-1.41-1.62 0-.9.63-1.62 1.41-1.62s1.42.72 1.42 1.62c0 .89-.64 1.62-1.42 1.62Z"/>
       </svg>
       Discord
     </a>
-
-    <!-- Features -->
-    <a class="cta features" href="https://kuromiware.shop/features" aria-label="View KuromiWare features">
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path fill="#fff" d="M12 2.5 13.7 7l4.8 1.7-4.8 1.7L12 16l-1.7-5.6L5.5 8.7 10.3 7 12 2.5Zm6.2 7.7.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6ZM5.8 13l.8 2.3 2.3.8-2.3.8-.8 2.3-.8-2.3-2.3-.8 2.3-.8.8-2.3Z"/>
-      </svg>
-      Features
-    </a>
-
-    <!-- Buy -->
-    <a class="cta buy" href="https://kuromi.bgng.io/product/KuromiWare" aria-label="Buy KuromiWare">
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path fill="#fff" d="M7 18a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 18Zm10 0a2 2 0 1 0 .001 4.001A2 2 0 0 0 17 18ZM6.2 6h13.07a1 1 0 0 1 .98 1.2l-1.18 6.5a2 2 0 0 1-1.97 1.63H9.02a2 2 0 0 1-1.97-1.64L5.5 5H3a1 1 0 0 1 0-2h3a2 2 0 0 1 1.97 1.64L8.3 10h8.74l.6-3.3H7.02L6.7 6Z"/>
-      </svg>
-      Buy
-    </a>
   </nav>
 
   <script>
-    // Fill year
+    // ---- Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Soft parallax tilt on the main card + slight brand drift
-    (function(){
-      const card = document.getElementById('about-card');
-      const brand = document.getElementById('brand');
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) return;
-
-      const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-
-      window.addEventListener('mousemove', (e)=>{
-        const { innerWidth:w, innerHeight:h } = window;
-        const x = (e.clientX / w - 0.5) * 2; 
-        const y = (e.clientY / h - 0.5) * 2;
-        const rx = clamp(-y * 3, -6, 6); 
-        const ry = clamp( x * 5, -8, 8);
-        card.style.setProperty('--rx', rx.toFixed(2) + 'deg');
-        card.style.setProperty('--ry', ry.toFixed(2) + 'deg');
-        brand.style.transform = `translate(${(x*3).toFixed(1)}px, ${(y*-2).toFixed(1)}px)`;
-      }, { passive:true });
-
-      const io = new IntersectionObserver((entries)=>{
-        entries.forEach(e=>{
-          if(e.isIntersecting){ card.style.willChange = 'transform'; io.disconnect(); }
-        });
-      }, { threshold:.2 });
-      io.observe(card);
-    })();
-
-    // Create floating sparkles
-    (function sparkles(){
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) return;
-
-      const MAX = 24;
-      const host = document.getElementById('particles');
-      const rand = (min, max) => Math.random() * (max - min) + min;
-
-      for (let i=0; i<MAX; i++){
-        const s = document.createElement('span');
-        s.className = 'sparkle';
-        const size = rand(4,8);
-        s.style.width = s.style.height = size + 'px';
-        s.style.left = rand(-5, 105) + 'vw';
-        s.style.top  = rand(60, 110) + 'vh';
-        s.style.setProperty('--dur', rand(10, 22) + 's');
-        s.style.setProperty('--delay', rand(-8, 6) + 's');
-        host.appendChild(s);
-      }
-    })();
-
-    // Ripple origin for CTA buttons
+    // ---- Ripple origin for CTA
     document.querySelectorAll('.cta').forEach(btn=>{
       btn.addEventListener('pointerdown', ev=>{
         const r = btn.getBoundingClientRect();
@@ -366,6 +281,139 @@
         btn.style.setProperty('--y', ((ev.clientY - r.top) / r.height*100).toFixed(1) + '%');
       }, { passive:true });
     });
+
+    // ---- Tilt effect on hero block + gentle brand drift
+    (() => {
+      const box = document.getElementById('tilt');
+      const brand = document.getElementById('brand');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+      const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+      window.addEventListener('mousemove', (e) => {
+        const { innerWidth:w, innerHeight:h } = window;
+        const x = (e.clientX / w - 0.5) * 2;
+        const y = (e.clientY / h - 0.5) * 2;
+        box.style.transform = `rotateX(${clamp(-y*6,-8,8)}deg) rotateY(${clamp(x*8,-10,10)}deg) translateZ(0)`;
+        brand.style.transform = `translate(${(x*3).toFixed(1)}px, ${(y*-2).toFixed(1)}px)`;
+      }, { passive:true });
+    })();
+
+    // ---- Canvas Particles (stars + twinkles + comets)
+    (() => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const canvas = document.getElementById('fx');
+      const ctx = canvas.getContext('2d', { alpha: true });
+      let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      let w, h, t = 0, stars = [], comets = [];
+      let mouseX = 0, mouseY = 0;
+
+      function resize(){
+        w = canvas.width = Math.floor(window.innerWidth * dpr);
+        h = canvas.height = Math.floor(window.innerHeight * dpr);
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+      }
+
+      function rand(a,b){ return Math.random() * (b-a) + a; }
+
+      function makeStars(count){
+        stars = new Array(count).fill(0).map(()=>({
+          x: rand(0,w), y: rand(0,h),
+          z: rand(0.2,1), // depth
+          r: rand(0.6, 1.8), // radius
+          tw: rand(0, Math.PI*2), // twinkle phase
+          spx: rand(-0.03, 0.03), spy: rand(-0.03, 0.03),
+        }));
+      }
+
+      function spawnComet(){
+        const side = Math.random() < 0.5 ? 'left' : 'right';
+        const y = rand(h*0.15, h*0.85);
+        const speed = rand(0.8, 1.6);
+        comets.push({
+          x: side === 'left' ? -50*dpr : w+50*dpr,
+          y, vx: side === 'left' ? speed : -speed, vy: -speed*rand(0.1,0.3),
+          life: 0, maxLife: rand(220, 360)
+        });
+      }
+
+      function draw(){
+        if (reduce) return;
+        t += 1;
+        ctx.clearRect(0,0,w,h);
+
+        // Slight parallax from cursor
+        const px = (mouseX - w/2) / w;
+        const py = (mouseY - h/2) / h;
+
+        // Stars
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (let s of stars){
+          s.x += s.spx + px*0.05*s.z;
+          s.y += s.spy + py*0.05*s.z;
+          if (s.x < -10) s.x = w+10; else if (s.x > w+10) s.x = -10;
+          if (s.y < -10) s.y = h+10; else if (s.y > h+10) s.y = -10;
+
+          const twinkle = 0.6 + 0.4 * Math.sin(s.tw + t*0.02*(0.5+s.z));
+          const r = s.r * dpr * (0.8 + s.z*0.4) * twinkle;
+
+          const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, r*2.2);
+          grad.addColorStop(0, `rgba(255,255,255,0.95)`);
+          grad.addColorStop(0.45, `rgba(255,138,214,0.6)`);
+          grad.addColorStop(1, `rgba(196,161,255,0)`);
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, r, 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // Comets
+        if (comets.length < 2 && Math.random() < 0.01) spawnComet();
+        for (let i=comets.length-1; i>=0; i--){
+          const c = comets[i];
+          c.life++;
+          c.x += c.vx*dpr*(1 + px*0.2);
+          c.y += c.vy*dpr*(1 + py*0.2);
+
+          const trail = 60;
+          for (let j=0; j<trail; j+=4){
+            const fade = (1 - j/trail);
+            const tx = c.x - c.vx*j*3;
+            const ty = c.y - c.vy*j*3;
+            const r = 2.2*dpr*fade;
+            ctx.fillStyle = `rgba(255, 180, 255, ${0.035*fade})`;
+            ctx.beginPath(); ctx.arc(tx, ty, r, 0, Math.PI*2); ctx.fill();
+          }
+          // head
+          const headGrad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, 10*dpr);
+          headGrad.addColorStop(0, 'rgba(255,255,255,0.95)');
+          headGrad.addColorStop(1, 'rgba(255,160,255,0)');
+          ctx.fillStyle = headGrad; ctx.beginPath(); ctx.arc(c.x,c.y, 6*dpr, 0, Math.PI*2); ctx.fill();
+
+          if (c.life > c.maxLife || c.x < -200*dpr || c.x > w+200*dpr || c.y < -200*dpr || c.y > h+200*dpr){
+            comets.splice(i,1);
+          }
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      function onPointer(e){
+        const rect = canvas.getBoundingClientRect();
+        mouseX = (e.clientX - rect.left) * dpr;
+        mouseY = (e.clientY - rect.top) * dpr;
+      }
+
+      // init
+      resize();
+      makeStars(Math.floor((window.innerWidth*window.innerHeight)/9000) + 80);
+      window.addEventListener('resize', () => { dpr = Math.max(1, Math.min(2, window.devicePixelRatio||1)); resize(); makeStars(stars.length); });
+      window.addEventListener('pointermove', onPointer, { passive:true });
+      if (!reduce) requestAnimationFrame(draw);
+    })();
   </script>
 </body>
 </html>
