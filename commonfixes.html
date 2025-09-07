@@ -4,13 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1a101c" />
-  <title>KuromiWare — Common Fixes (Forum)</title>
+  <title>KuromiWare — Common Fixes</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Match the vibe, not the exact index */
       --bg-url: url("https://motionbgs.com/media/1730/sweet-and-spooky-kuromi.jpg");
       --ink-2: #1a101c;
       --muted: #b8afc3;
@@ -38,7 +37,6 @@
       overflow-x:hidden;
     }
 
-    /* Background */
     .backdrop{ position:fixed; inset:0; z-index:-3; overflow:hidden; }
     .backdrop::before{
       content:""; position:absolute; inset:-4vmax;
@@ -57,7 +55,6 @@
     }
     @keyframes kenburns{ 0%{transform:scale(1.05)} 100%{transform:scale(1.12) translate3d(1%,-1%,0)} }
 
-    /* Header bar */
     .bar{
       position:sticky; top:0; z-index:5;
       backdrop-filter: blur(10px) saturate(1.1);
@@ -87,7 +84,6 @@
 
     .wrap{ max-width:1100px; margin:0 auto; padding: clamp(18px, 4vw, 42px); }
 
-    /* Forum board */
     .board{
       border:1px solid var(--stroke);
       border-radius:var(--radius-xl);
@@ -106,7 +102,6 @@
     }
     .board-head .muted{ color:var(--muted); font-size:13px }
 
-    /* Thread card */
     .thread{
       display:grid; grid-template-columns: 64px 1fr; gap:16px;
       padding:18px 20px;
@@ -175,7 +170,6 @@
       margin:20px 0 10px;
     }
 
-    /* Reduced motion */
     @media (prefers-reduced-motion: reduce){
       .backdrop::before{ animation:none !important }
     }
@@ -184,7 +178,6 @@
 <body>
   <div class="backdrop" aria-hidden="true"></div>
 
-  <!-- Header -->
   <header class="bar" role="banner">
     <div class="bar-inner">
       <div class="logo" aria-label="Site title">
@@ -199,22 +192,21 @@
   <main class="wrap" role="main">
     <section class="board" aria-labelledby="board-title">
       <div class="board-head">
-        <h2 id="board-title">Pinned: Community Help Threads</h2>
-        <span class="muted">Theme matched • Forum style • Words preserved</span>
+        <h2 id="board-title"></h2>
+        <span class="muted"></span>
       </div>
 
-      <!-- Thread 1 -->
       <article class="thread" aria-labelledby="t1">
         <div class="avatar" aria-hidden="true"></div>
         <div class="t-body">
           <h3 class="t-title" id="t1">Anti virus issues <span class="tag">Guide</span></h3>
-          <div class="meta">Posted just now • OP</div>
+          <div class="meta"></div>
           <div class="post">
-            <h3># Anti virus issues</h3>
+            <h3>Anti virus issues</h3>
 
             <p class="sep"><strong>-------------------------------------------------</strong></p>
 
-            <h4>## DO NOT SKIP STEPS!</h4>
+            <h4>DO NOT SKIP STEPS!</h4>
 
             <p>turn off <strong>real time protection</strong> under (virus and threat protection)<br>
             and <strong>tamper protection</strong></p>
@@ -231,19 +223,18 @@
               <button class="btn" data-copy="sordum">Copy password</button>
             </div>
 
-            <p style="margin-top:12px; color:#ffddddb3;"><em>Heads-up: turning off security features can increase risk. Re-enable protections when finished.</em></p>
+            <p style="margin-top:12px; color:#ffddddb3;"><em></em></p>
           </div>
         </div>
       </article>
 
-      <!-- Thread 2 -->
       <article class="thread" aria-labelledby="t2">
         <div class="avatar" aria-hidden="true"></div>
         <div class="t-body">
           <h3 class="t-title" id="t2">Failed to open menu <span class="tag">Fix</span></h3>
-          <div class="meta">Posted just now • OP</div>
+          <div class="meta"></div>
           <div class="post">
-            <h3># Failed to open menu</h3>
+            <h3>Failed to open menu</h3>
 
             <p class="sep"><strong>-------------------------------------------------</strong></p>
 
@@ -254,14 +245,13 @@
         </div>
       </article>
 
-      <!-- Thread 3 -->
       <article class="thread" aria-labelledby="t3">
         <div class="avatar" aria-hidden="true"></div>
         <div class="t-body">
           <h3 class="t-title" id="t3">Cant login <span class="tag">Network</span></h3>
-          <div class="meta">Posted just now • OP</div>
+          <div class="meta"></div>
           <div class="post">
-            <h3># Cant login</h3>
+            <h3>Cant login</h3>
 
             <p class="sep"><strong>-------------------------------------------------</strong></p>
 
@@ -295,13 +285,12 @@
       </article>
     </section>
 
-    <footer>© <span id="year"></span> KuromiWare • Forum-styled Common Fixes</footer>
+    <footer>© <span id="year"></span> KuromiWare</footer>
   </main>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Copy helpers
     document.querySelectorAll('.btn[data-copy]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const txt = btn.getAttribute('data-copy');
