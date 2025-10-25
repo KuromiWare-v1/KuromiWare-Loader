@@ -1,419 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#1a101c" />
-  <title>KuromiWare v1</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#120a14" />
+<title>KuromiWare v1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #ff8ad6;
+  --lav: #c4a1ff;
+  --ink: #0e090f;
+  --muted: #d1c9e4;
+  --panel: rgba(30, 20, 38, .5);
+  --white: #faf8fc;
+  --glow: 0 0 25px rgba(255,138,214,.35), 0 0 60px rgba(196,161,255,.25);
+  --radius: 22px;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; color: var(--white); background: var(--ink); overflow-x: hidden; }
 
-  <style>
-    :root{
-      --bg-url: url("https://motionbgs.com/media/1730/sweet-and-spooky-kuromi.jpg");
-      --ink-2: #110b12;
-      --muted: #c7bdda;
-      --panel: rgba(20,14,24,.55);
-      --panel-strong: rgba(20,14,24,.72);
-      --stroke: rgba(255,255,255,.12);
-      --white: #f7f6f9;
-      --pink: #ff8ad6;
-      --lav: #c4a1ff;
-      --ring: rgba(255,255,255,.5);
-      --glow: 0 16px 60px rgba(255,102,196,.25), 0 6px 24px rgba(196,161,255,.18);
-      --shadow-xl: 0 25px 80px rgba(0,0,0,.55);
-      --radius-xl: 26px;
-    }
+/* === BACKGROUND === */
+.bg {
+  position: fixed; inset: 0; z-index: -3; overflow: hidden;
+  background:
+    radial-gradient(1500px 800px at 80% 10%, rgba(255,138,214,.25), transparent 60%),
+    radial-gradient(1000px 800px at 15% 80%, rgba(196,161,255,.25), transparent 60%),
+    url('https://motionbgs.com/media/1730/sweet-and-spooky-kuromi.jpg') center/cover no-repeat fixed;
+  filter: brightness(.9) contrast(1.05) saturate(1.1);
+  animation: zoom 40s ease-in-out infinite alternate;
+}
+@keyframes zoom { from { transform: scale(1); } to { transform: scale(1.12) translate(-1%,1%); } }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body{
-      margin:0;
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--white);
-      background: var(--ink-2);
-      overflow-x: hidden;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
+/* Aurora layer */
+.aurora::before {
+  content:""; position:fixed; inset:-20%; z-index:-2; pointer-events:none;
+  background:
+    radial-gradient(50% 80% at 40% 40%, rgba(255,138,214,.22), transparent 70%),
+    radial-gradient(60% 80% at 70% 70%, rgba(196,161,255,.18), transparent 70%);
+  filter: blur(80px) saturate(1.2);
+  animation: aurora 30s ease-in-out infinite alternate;
+}
+@keyframes aurora { from { transform: translateY(-4%) rotate(0deg);} to { transform: translateY(6%) rotate(8deg);} }
 
-    /* ---------- BACKGROUND LAYERS ---------- */
-    .backdrop{ position: fixed; inset: 0; z-index: -4; overflow: hidden; }
-    .backdrop::before{
-      content:""; position:absolute; inset:-6vmax;
-      background:
-        radial-gradient(1200px 800px at 85% 8%, rgba(255,138,214,.30), transparent 60%),
-        radial-gradient(1200px 800px at 10% 90%, rgba(196,161,255,.26), transparent 60%),
-        var(--bg-url) center / cover no-repeat fixed;
-      filter: saturate(1.06) contrast(1.06) brightness(.95);
-      transform: scale(1.06);
-      animation: kenburns 32s ease-in-out infinite alternate;
-      will-change: transform;
-    }
-    .backdrop::after{
-      content:""; position:absolute; inset:0;
-      background:
-        radial-gradient(1200px 800px at 50% 0%, rgba(0,0,0,.35), transparent 60%),
-        linear-gradient(180deg, rgba(10,6,12,.4), rgba(10,6,12,.75) 50%, rgba(10,6,12,.92));
-      mix-blend-mode: multiply; pointer-events: none;
-    }
+/* Floating Kuromi particles */
+canvas#fx { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
 
-    /* Film grain */
-    .grain{ position: fixed; inset:0; z-index:-2; pointer-events:none; opacity:.07;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
-      animation: drift 18s linear infinite alternate; }
+/* === HEADER BRAND === */
+.brand {
+  position: fixed; top: 20px; right: 20px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 14px;
+  background: rgba(30,20,38,.6);
+  backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: var(--glow);
+  transition: transform .3s ease;
+}
+.brand:hover { transform: translateY(-3px); }
+.brand h1 {
+  margin:0; font-weight:800; font-size:1.2rem;
+  background: linear-gradient(90deg,#fff,var(--pink),var(--lav),#fff);
+  background-size: 200% auto;
+  -webkit-background-clip:text; color:transparent;
+  animation: shimmer 8s linear infinite;
+}
+@keyframes shimmer { to { background-position: 200% center; } }
 
-    /* Aurora ribbon */
-    .aurora{ position: fixed; inset:0; z-index:-1; pointer-events:none; }
-    .aurora::before{
-      content:""; position:absolute; inset:-30% -10% -20% -10%;
-      background:
-        radial-gradient(60% 120% at 40% 40%, rgba(255,138,214,.18), transparent 60%),
-        radial-gradient(50% 120% at 60% 60%, rgba(196,161,255,.15), transparent 60%);
-      filter: blur(60px) saturate(1.2);
-      animation: auroraMove 20s ease-in-out infinite alternate;
-    }
+/* === HERO === */
+main { display:grid; place-items:center; min-height:100vh; text-align:center; }
+.hero {
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  transition: transform .3s ease;
+}
+.card {
+  position: relative;
+  padding: clamp(20px,5vw,48px);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(30,20,38,.65), rgba(30,20,38,.5));
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: var(--glow);
+  backdrop-filter: blur(14px) saturate(1.1);
+  transform: translateZ(50px);
+  overflow:hidden;
+}
+.card::after {
+  content:""; position:absolute; inset:0; border-radius:inherit;
+  background: conic-gradient(from var(--a,0deg), #ffffff22, var(--pink)55%, var(--lav)90%, #ffffff22);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:borderSpin 12s linear infinite;
+  pointer-events:none;
+}
+@keyframes borderSpin { to { --a: 360deg; } }
+h2.title {
+  font-size: clamp(44px,9vw,100px);
+  margin:0;
+  background: radial-gradient(circle at 30% 30%, #fff, var(--pink) 50%, var(--lav) 100%);
+  -webkit-background-clip:text; color:transparent;
+  text-shadow:0 8px 60px rgba(255,138,214,.2);
+}
+p.subtitle {
+  font-size: clamp(16px,2.4vw,20px);
+  color: var(--muted);
+  margin-top:12px;
+  letter-spacing:.3px;
+}
+.sheen {
+  content:""; position:absolute; inset:-1px; border-radius:inherit;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+  transform:translateX(-120%);
+  animation:sheenMove 5s ease-in-out infinite;
+  mix-blend-mode:screen;
+}
+@keyframes sheenMove { 0%{transform:translateX(-120%);} 50%{transform:translateX(120%);} 100%{transform:translateX(120%);} }
 
-    /* Canvas particles */
-    #fx{
-      position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    }
+/* === CTA === */
+.cta-dock {
+  position: fixed; right: 24px; bottom: 24px; z-index: 10;
+  display:flex; gap:12px;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:18px;
+  background:rgba(30,20,38,.55);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--glow);
+  animation:dockIn .8s ease-out both .3s;
+}
+@keyframes dockIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.cta {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 18px;
+  border-radius:12px; text-decoration:none; color:#fff;
+  font-weight:700; letter-spacing:.3px;
+  background:linear-gradient(90deg,#5865F2,#8EA1E1);
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.cta:hover { transform:translateY(-2px) scale(1.03); box-shadow:0 14px 30px rgba(0,0,0,.4); }
+.cta svg { width:18px; height:18px; fill:#fff; }
 
-    /* ---------- BRAND ---------- */
-    .brand{
-      position: fixed;
-      top: clamp(10px, 2.2vw, 22px);
-      right: clamp(10px, 2.2vw, 22px);
-      z-index: 10;
-      padding: 10px 14px;
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(24,16,28,.55), rgba(24,16,28,.35));
-      backdrop-filter: blur(10px) saturate(1.05);
-      box-shadow: var(--glow), var(--shadow-xl);
-      display:flex; align-items:center; gap:10px;
-      user-select: none;
-      transition: transform .4s ease;
-    }
-    .brand:hover{ transform: translateY(-2px); }
-    .brand h1{
-      margin:0; font-size: clamp(16px, 2.2vw, 22px);
-      letter-spacing:.4px; font-weight: 800;
-      background: linear-gradient(90deg, #fff, var(--pink) 35%, var(--lav) 70%, #fff 100%);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-      text-shadow: 0 6px 30px rgba(255,102,196,.25);
-      white-space: nowrap;
-      background-size: 220% 100%;
-      animation: shimmer 8s linear infinite;
-    }
+/* Footer */
+footer { text-align:center; font-size:13px; color:var(--muted); margin-top:40px; }
 
-    /* ---------- HERO ---------- */
-    .wrap{ max-width: 1200px; margin: 0 auto; padding: clamp(18px, 4vw, 48px); }
-    .hero{
-      min-height: 72vh;
-      display: grid; place-items: center;
-      text-align: center;
-      margin-top: clamp(30px, 6vh, 100px);
-      perspective: 1000px;
-    }
-
-    .logo-stack{
-      position: relative;
-      display: inline-block;
-      padding: clamp(16px, 3vw, 28px) clamp(22px, 4vw, 40px);
-      border-radius: var(--radius-xl);
-      background: linear-gradient(180deg, var(--panel), var(--panel-strong));
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: var(--shadow-xl), var(--glow);
-      backdrop-filter: blur(10px) saturate(1.08);
-      transform-style: preserve-3d;
-      transition: transform .25s ease;
-      will-change: transform;
-      isolation: isolate;
-    }
-    /* rotating halo border */
-    .logo-stack::after{
-      content:""; position:absolute; inset:0; border-radius: inherit; padding:1px;
-      background: conic-gradient(from var(--angle,0deg), #ffffff33, #ff8ad666, #c4a1ff66, #ffffff33);
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-              mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      animation: borderSpin 12s linear infinite;
-      pointer-events:none;
-    }
-
-    .title{
-      margin:0;
-      font-weight: 800;
-      font-size: clamp(36px, 8.6vw, 92px);
-      letter-spacing: .4px;
-      line-height: .95;
-      background: radial-gradient(120% 120% at 30% 40%, #fff 0%, #ffe8f9 50%, #e7dbff 100%);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-      text-shadow: 0 10px 60px rgba(255,102,196,.18);
-      transform: translateZ(40px);
-    }
-    .subtitle{
-      margin: 10px 0 0;
-      color: var(--muted);
-      font-weight: 600;
-      font-size: clamp(14px, 2.4vw, 18px);
-      transform: translateZ(30px);
-    }
-
-    /* subtle sheen across the title block */
-    .sheen{
-      pointer-events:none; position:absolute; inset:-1px; border-radius: inherit;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
-      transform: translateZ(50px) translateX(-120%);
-      animation: sweep 4.8s ease-in-out 1.2s infinite;
-      mix-blend-mode: screen;
-    }
-
-    footer{ margin: clamp(18px, 4vw, 40px) 0 8px; text-align:center; color: var(--muted); font-size: 12.5px; opacity:.9; }
-
-    /* ---------- CTA (Discord only) ---------- */
-    .cta-dock{
-      position: fixed;
-      right: clamp(14px, 3vw, 24px);
-      bottom: calc(clamp(14px, 3vw, 24px) + env(safe-area-inset-bottom, 0px));
-      z-index: 12;
-      display: flex; gap: 10px;
-      padding: 10px;
-      border-radius: 16px;
-      border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(24,16,28,.62), rgba(24,16,28,.4));
-      backdrop-filter: blur(10px) saturate(1.1);
-      box-shadow: var(--glow), var(--shadow-xl);
-      animation: dockIn .8s cubic-bezier(.2,.7,.2,1) .3s both;
-    }
-    .cta{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 12px 16px;
-      font-weight: 800; letter-spacing:.2px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.18);
-      color: #fff; text-decoration: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,.35);
-      transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
-      position: relative; overflow: hidden;
-    }
-    .cta svg{ width: 18px; height: 18px; flex: 0 0 18px; }
-    .cta:focus-visible{ outline: 2px solid var(--ring); outline-offset: 2px; }
-    .cta:hover{ transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 36px rgba(0,0,0,.45); }
-    .cta:active{ transform: translateY(0) scale(.99); }
-    .cta.discord{ background: linear-gradient(90deg, #5865F2 0%, #8EA1E1 100%); }
-    .cta::after{
-      content:""; position:absolute; inset:0;
-      background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,.25), transparent 40%);
-      opacity:0; transition: opacity .25s ease;
-    }
-    .cta:active::after{ opacity:.85; transition: opacity .05s ease; }
-
-    /* ---------- ANIMATIONS ---------- */
-    @keyframes kenburns{ 0%{transform:scale(1.04)} 100%{transform:scale(1.12) translate3d(1%,-1%,0)} }
-    @keyframes drift{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-2%,2%,0)} }
-    @keyframes shimmer{ 0%{background-position:0% 50%} 100%{background-position:220% 50%} }
-    @keyframes borderSpin{ to{ --angle: 360deg; } }
-    @keyframes dockIn{ 0%{ opacity:0; transform: translateY(12px) scale(.98);} 100%{ opacity:1; transform: translateY(0) scale(1);} }
-    @keyframes sweep{
-      0%{ transform: translateZ(50px) translateX(-120%) skewX(-10deg);}
-      45%,55%{ transform: translateZ(50px) translateX(120%) skewX(-10deg);}
-      100%{ transform: translateZ(50px) translateX(120%) skewX(-10deg);}
-    }
-
-    /* Reduced motion support */
-    @media (prefers-reduced-motion: reduce){
-      .backdrop::before, .grain, .aurora::before, #fx, .brand h1, .logo-stack::after, .sheen, .cta-dock { animation: none !important; }
-      .logo-stack, .title, .subtitle { transform: none !important; }
-    }
-
-    /* Mobile tweaks */
-    @media (max-width: 520px){
-      .logo-stack{ padding: 18px 20px; }
-    }
-  </style>
+/* === RESPONSIVE === */
+@media (max-width:560px){
+  .card { padding:28px 22px; }
+  .brand { top:10px; right:10px; }
+}
+</style>
 </head>
 <body>
-  <!-- Background layers -->
-  <div class="backdrop" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
-  <div class="aurora" aria-hidden="true"></div>
-  <canvas id="fx" aria-hidden="true"></canvas>
 
-  <!-- Top-right brand -->
-  <div class="brand" id="brand">
-    <h1>KuromiWare v1</h1>
-  </div>
+<div class="bg"></div>
+<div class="aurora"></div>
+<canvas id="fx"></canvas>
 
-  <!-- Content -->
-  <main class="wrap">
-    <section class="hero">
-      <div class="logo-stack" id="tilt">
-        <h2 class="title">KuromiWare</h2>
-        <p class="subtitle">This is the homepage for Kuromi!</p>
-        <span class="sheen"></span>
-      </div>
-      <footer>© <span id="year"></span> KuromiWare</footer>
-    </section>
-  </main>
+<div class="brand"><h1>KuromiWare v1</h1></div>
 
-  <!-- CTA Dock (Discord only) -->
-  <nav class="cta-dock" aria-label="Quick actions">
-    <a class="cta discord" href="https://discord.gg/KYT59FhvV9" aria-label="Join the KuromiWare Discord">
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path fill="#fff" d="M19.54 5.34a16.6 16.6 0 0 0-4.06-1.26c-.17.31-.37.73-.5 1.06a15.16 15.16 0 0 0-5.94 0c-.13-.34-.33-.75-.5-1.06-1.42.26-2.78.7-4.06 1.26C2.67 9.07 1.98 12.7 2.2 16.28a16.4 16.4 0 0 0 5 2.52c.4-.55.75-1.13 1.05-1.75-.58-.22-1.13-.48-1.65-.79.14-.1.28-.2.42-.31a11.46 11.46 0 0 0 10.96 0c.14.11.28.21.42.31-.52.31-1.07.57-1.65.79.3.62.65 1.2 1.05 1.75a16.4 16.4 0 0 0 5-2.52c.26-4.03-.45-7.63-2.78-10.94ZM9.5 14.5c-.78 0-1.41-.73-1.41-1.62 0-.9.63-1.62 1.41-1.62s1.42.72 1.42 1.62c0 .89-.64 1.62-1.42 1.62Zm5 0c-.78 0-1.41-.73-1.41-1.62 0-.9.63-1.62 1.41-1.62s1.42.72 1.42 1.62c0 .89-.64 1.62-1.42 1.62Z"/>
-      </svg>
-      Discord
-    </a>
-  </nav>
+<main>
+  <section class="hero" id="hero">
+    <div class="card" id="tilt">
+      <h2 class="title">KuromiWare</h2>
+      <p class="subtitle">The evolution of playful precision.</p>
+      <span class="sheen"></span>
+    </div>
+    <footer>© <span id="year"></span> KuromiWare</footer>
+  </section>
+</main>
 
-  <script>
-    // ---- Year
-    document.getElementById('year').textContent = new Date().getFullYear();
+<nav class="cta-dock">
+  <a class="cta" href="https://discord.gg/KYT59FhvV9" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M19.54 5.34a16.6 16.6 0 0 0-4.06-1.26c-.17.31-.37.73-.5 1.06a15.16 15.16 0 0 0-5.94 0c-.13-.34-.33-.75-.5-1.06-1.42.26-2.78.7-4.06 1.26C2.67 9.07 1.98 12.7 2.2 16.28a16.4 16.4 0 0 0 5 2.52c.4-.55.75-1.13 1.05-1.75-.58-.22-1.13-.48-1.65-.79.14-.1.28-.2.42-.31a11.46 11.46 0 0 0 10.96 0c.14.11.28.21.42.31-.52.31-1.07.57-1.65.79.3.62.65 1.2 1.05 1.75a16.4 16.4 0 0 0 5-2.52c.26-4.03-.45-7.63-2.78-10.94Z"/></svg>
+    Discord
+  </a>
+</nav>
 
-    // ---- Ripple origin for CTA
-    document.querySelectorAll('.cta').forEach(btn=>{
-      btn.addEventListener('pointerdown', ev=>{
-        const r = btn.getBoundingClientRect();
-        btn.style.setProperty('--x', ((ev.clientX - r.left) / r.width*100).toFixed(1) + '%');
-        btn.style.setProperty('--y', ((ev.clientY - r.top) / r.height*100).toFixed(1) + '%');
-      }, { passive:true });
-    });
+<script>
+// Year
+document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ---- Tilt effect on hero block + gentle brand drift
-    (() => {
-      const box = document.getElementById('tilt');
-      const brand = document.getElementById('brand');
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) return;
-      const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
-      window.addEventListener('mousemove', (e) => {
-        const { innerWidth:w, innerHeight:h } = window;
-        const x = (e.clientX / w - 0.5) * 2;
-        const y = (e.clientY / h - 0.5) * 2;
-        box.style.transform = `rotateX(${clamp(-y*6,-8,8)}deg) rotateY(${clamp(x*8,-10,10)}deg) translateZ(0)`;
-        brand.style.transform = `translate(${(x*3).toFixed(1)}px, ${(y*-2).toFixed(1)}px)`;
-      }, { passive:true });
-    })();
+// Tilt animation
+(() => {
+  const tilt = document.getElementById('tilt');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  window.addEventListener('mousemove', e => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    tilt.style.transform = `rotateX(${y * -8}deg) rotateY(${x * 10}deg)`;
+  }, { passive: true });
+})();
 
-    // ---- Canvas Particles (stars + twinkles + comets)
-    (() => {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const canvas = document.getElementById('fx');
-      const ctx = canvas.getContext('2d', { alpha: true });
-      let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      let w, h, t = 0, stars = [], comets = [];
-      let mouseX = 0, mouseY = 0;
-
-      function resize(){
-        w = canvas.width = Math.floor(window.innerWidth * dpr);
-        h = canvas.height = Math.floor(window.innerHeight * dpr);
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
-      }
-
-      function rand(a,b){ return Math.random() * (b-a) + a; }
-
-      function makeStars(count){
-        stars = new Array(count).fill(0).map(()=>({
-          x: rand(0,w), y: rand(0,h),
-          z: rand(0.2,1), // depth
-          r: rand(0.6, 1.8), // radius
-          tw: rand(0, Math.PI*2), // twinkle phase
-          spx: rand(-0.03, 0.03), spy: rand(-0.03, 0.03),
-        }));
-      }
-
-      function spawnComet(){
-        const side = Math.random() < 0.5 ? 'left' : 'right';
-        const y = rand(h*0.15, h*0.85);
-        const speed = rand(0.8, 1.6);
-        comets.push({
-          x: side === 'left' ? -50*dpr : w+50*dpr,
-          y, vx: side === 'left' ? speed : -speed, vy: -speed*rand(0.1,0.3),
-          life: 0, maxLife: rand(220, 360)
-        });
-      }
-
-      function draw(){
-        if (reduce) return;
-        t += 1;
-        ctx.clearRect(0,0,w,h);
-
-        // Slight parallax from cursor
-        const px = (mouseX - w/2) / w;
-        const py = (mouseY - h/2) / h;
-
-        // Stars
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        for (let s of stars){
-          s.x += s.spx + px*0.05*s.z;
-          s.y += s.spy + py*0.05*s.z;
-          if (s.x < -10) s.x = w+10; else if (s.x > w+10) s.x = -10;
-          if (s.y < -10) s.y = h+10; else if (s.y > h+10) s.y = -10;
-
-          const twinkle = 0.6 + 0.4 * Math.sin(s.tw + t*0.02*(0.5+s.z));
-          const r = s.r * dpr * (0.8 + s.z*0.4) * twinkle;
-
-          const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, r*2.2);
-          grad.addColorStop(0, `rgba(255,255,255,0.95)`);
-          grad.addColorStop(0.45, `rgba(255,138,214,0.6)`);
-          grad.addColorStop(1, `rgba(196,161,255,0)`);
-
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, r, 0, Math.PI*2);
-          ctx.fill();
-        }
-        ctx.restore();
-
-        // Comets
-        if (comets.length < 2 && Math.random() < 0.01) spawnComet();
-        for (let i=comets.length-1; i>=0; i--){
-          const c = comets[i];
-          c.life++;
-          c.x += c.vx*dpr*(1 + px*0.2);
-          c.y += c.vy*dpr*(1 + py*0.2);
-
-          const trail = 60;
-          for (let j=0; j<trail; j+=4){
-            const fade = (1 - j/trail);
-            const tx = c.x - c.vx*j*3;
-            const ty = c.y - c.vy*j*3;
-            const r = 2.2*dpr*fade;
-            ctx.fillStyle = `rgba(255, 180, 255, ${0.035*fade})`;
-            ctx.beginPath(); ctx.arc(tx, ty, r, 0, Math.PI*2); ctx.fill();
-          }
-          // head
-          const headGrad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, 10*dpr);
-          headGrad.addColorStop(0, 'rgba(255,255,255,0.95)');
-          headGrad.addColorStop(1, 'rgba(255,160,255,0)');
-          ctx.fillStyle = headGrad; ctx.beginPath(); ctx.arc(c.x,c.y, 6*dpr, 0, Math.PI*2); ctx.fill();
-
-          if (c.life > c.maxLife || c.x < -200*dpr || c.x > w+200*dpr || c.y < -200*dpr || c.y > h+200*dpr){
-            comets.splice(i,1);
-          }
-        }
-
-        requestAnimationFrame(draw);
-      }
-
-      function onPointer(e){
-        const rect = canvas.getBoundingClientRect();
-        mouseX = (e.clientX - rect.left) * dpr;
-        mouseY = (e.clientY - rect.top) * dpr;
-      }
-
-      // init
-      resize();
-      makeStars(Math.floor((window.innerWidth*window.innerHeight)/9000) + 80);
-      window.addEventListener('resize', () => { dpr = Math.max(1, Math.min(2, window.devicePixelRatio||1)); resize(); makeStars(stars.length); });
-      window.addEventListener('pointermove', onPointer, { passive:true });
-      if (!reduce) requestAnimationFrame(draw);
-    })();
-  </script>
+// Particle system (glowing Kuromi sparkles)
+(() => {
+  const canvas = document.getElementById('fx');
+  const ctx = canvas.getContext('2d');
+  let w,h,dpr,stars;
+  function resize(){
+    dpr = window.devicePixelRatio||1;
+    w = canvas.width = innerWidth*dpr;
+    h = canvas.height = innerHeight*dpr;
+    ctx.scale(dpr,dpr);
+    make();
+  }
+  function make(){
+    stars = Array.from({length:120}, ()=>({
+      x: Math.random()*innerWidth,
+      y: Math.random()*innerHeight,
+      r: Math.random()*1.5+0.3,
+      s: Math.random()*0.6+0.2
+    }));
+  }
+  function draw(){
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    for(const s of stars){
+      s.x+=s.s; s.y+=s.s*0.4;
+      if(s.x>innerWidth||s.y>innerHeight){ s.x=Math.random()*innerWidth; s.y=-5; }
+      const g = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*6);
+      g.addColorStop(0,'rgba(255,255,255,.9)');
+      g.addColorStop(.4,'rgba(255,138,214,.4)');
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g;
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r*3,0,Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); draw();
+  addEventListener('resize',resize);
+})();
+</script>
 </body>
 </html>
