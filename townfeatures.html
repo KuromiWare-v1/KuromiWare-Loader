@@ -442,8 +442,6 @@
   </div>
 
   <script>
-    // ================= ESP PREVIEW =================
-
 const canvas = document.getElementById("espCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -474,16 +472,6 @@ function drawESPPreview() {
   const boxX = centerX - boxW / 2;
   const boxY = topY;
 
-  // Tracer
-  if (previewState.tracer) {
-    ctx.strokeStyle = previewState.visibleColor;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(centerX, canvas.height);
-    ctx.lineTo(centerX, boxY);
-    ctx.stroke();
-  }
-
   // Fill Box
   ctx.fillStyle = previewState.visibleColor + Math.floor(previewState.fillAlpha * 255).toString(16).padStart(2,"0");
   ctx.fillRect(boxX, boxY, boxW, boxH);
@@ -509,7 +497,6 @@ function drawESPPreview() {
     ctx.stroke();
   }
 
-  // Skeleton (Roblox R6 style)
   if (previewState.skeleton) {
     ctx.strokeStyle = "#ffffff";
     ctx.lineWidth = 2;
@@ -529,21 +516,18 @@ function drawESPPreview() {
 
     // legs
     ctx.moveTo(centerX, hipY);
-    ctx.lineTo(centerX - 20, bottomY);
+    ctx.lineTo(centerX - 10, bottomY - 30);
 
     ctx.moveTo(centerX, hipY);
-    ctx.lineTo(centerX + 20, bottomY);
+    ctx.lineTo(centerX + 10, bottomY - 30);
 
     ctx.stroke();
   }
 
-  // Name & Distance
   ctx.font = "bold 14px Inter";
   ctx.fillStyle = "#fff";
   if (previewState.name) ctx.fillText("PlayerName", boxX, boxY - 22);
-  if (previewState.distance) ctx.fillText("32m", boxX + boxW - 30, boxY - 22);
 
-  // Health Bar
   if (previewState.health) {
     const hp = 0.72;
     const barH = boxH;
@@ -554,13 +538,6 @@ function drawESPPreview() {
 
     ctx.fillStyle = "#00ff6a";
     ctx.fillRect(barX, boxY + barH * (1 - hp), 6, barH * hp);
-  }
-
-  // Passive Tag
-  if (previewState.passive) {
-    ctx.font = "bold 12px Inter";
-    ctx.fillStyle = previewState.passiveColor;
-    ctx.fillText("(P)", centerX - 10, boxY + boxH + 18);
   }
 }
 
