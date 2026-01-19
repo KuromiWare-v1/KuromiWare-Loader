@@ -21,7 +21,6 @@
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; color: var(--white); background: var(--ink); overflow-x: hidden; }
 
-/* === BACKGROUND === */
 .bg {
   position: fixed; inset: 0; z-index: -3; overflow: hidden;
   background:
@@ -33,7 +32,6 @@ html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; color: v
 }
 @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.12) translate(-1%,1%); } }
 
-/* Aurora layer */
 .aurora::before {
   content:""; position:fixed; inset:-20%; z-index:-2; pointer-events:none;
   background:
@@ -44,10 +42,8 @@ html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; color: v
 }
 @keyframes aurora { from { transform: translateY(-4%) rotate(0deg);} to { transform: translateY(6%) rotate(8deg);} }
 
-/* Floating Kuromi particles */
 canvas#fx { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
 
-/* === HEADER BRAND === */
 .brand {
   position: fixed; top: 20px; right: 20px;
   padding: 10px 16px;
@@ -68,7 +64,6 @@ canvas#fx { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
 }
 @keyframes shimmer { to { background-position: 200% center; } }
 
-/* === HERO === */
 main { display:grid; place-items:center; min-height:100vh; text-align:center; }
 .hero {
   transform-style: preserve-3d;
@@ -117,7 +112,6 @@ p.subtitle {
 }
 @keyframes sheenMove { 0%{transform:translateX(-120%);} 50%{transform:translateX(120%);} 100%{transform:translateX(120%);} }
 
-/* === CTA === */
 .cta-dock {
   position: fixed; right: 24px; bottom: 24px; z-index: 10;
   display:flex; gap:12px;
@@ -142,10 +136,8 @@ p.subtitle {
 .cta:hover { transform:translateY(-2px) scale(1.03); box-shadow:0 14px 30px rgba(0,0,0,.4); }
 .cta svg { width:18px; height:18px; fill:#fff; }
 
-/* Footer */
 footer { text-align:center; font-size:13px; color:var(--muted); margin-top:40px; }
 
-/* === RESPONSIVE === */
 @media (max-width:560px){
   .card { padding:28px 22px; }
   .brand { top:10px; right:10px; }
@@ -179,10 +171,8 @@ footer { text-align:center; font-size:13px; color:var(--muted); margin-top:40px;
 </nav>
 
 <script>
-// Year
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Tilt animation
 (() => {
   const tilt = document.getElementById('tilt');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -194,7 +184,6 @@ document.getElementById("year").textContent = new Date().getFullYear();
   }, { passive: true });
 })();
 
-// Particle system (glowing Kuromi sparkles)
 (() => {
   const canvas = document.getElementById('fx');
   const ctx = canvas.getContext('2d');
