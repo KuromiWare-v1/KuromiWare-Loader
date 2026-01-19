@@ -71,6 +71,28 @@
 
     @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
     @media (max-width:560px){.range{inline-size:100%}}
+
+    .esp-preview {
+  margin-top: 12px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(20,12,24,.7), rgba(10,6,14,.9));
+  border: 1px solid rgba(255,255,255,.12);
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+#espCanvas {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at top, rgba(255,138,214,.18), transparent 60%),
+    linear-gradient(180deg,#140b18,#0b0710);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.05),
+    0 20px 40px rgba(0,0,0,.6);
+}
   </style>
 </head>
 <body>
@@ -293,7 +315,19 @@
           <div class="row"><div class="label">Drone Color</div><input class="color" type="color" value="#ffb43c"></div>
         </div>
       </div>
+      <div class="card">
+  <p class="eyebrow">Preview</p>
+  <h3>ESP Preview (Roblox Character)</h3>
+
+  <div class="esp-preview">
+    <canvas id="espCanvas" width="420" height="300"></canvas>
+  </div>
+</div>
+
     </section>
+
+  
+
 
     <section id="World" class="content" role="tabpanel">
       <div class="grid">
@@ -408,6 +442,131 @@
   </div>
 
   <script>
+    // ================= ESP PREVIEW =================
+
+const canvas = document.getElementById("espCanvas");
+const ctx = canvas.getContext("2d");
+
+const previewState = {
+  box: true,
+  corner: true,
+  skeleton: true,
+  tracer: true,
+  name: true,
+  health: true,
+  distance: true,
+  passive: true,
+  fillAlpha: 0.15,
+  boxColor: "#00ffff",
+  passiveColor: "#96d2ff",
+  visibleColor: "#00ffff"
+};
+
+function drawESPPreview() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const centerX = canvas.width / 2;
+  const topY = 40;
+  const bottomY = 240;
+  const boxW = 90;
+  const boxH = 170;
+
+  const boxX = centerX - boxW / 2;
+  const boxY = topY;
+
+  // Tracer
+  if (previewState.tracer) {
+    ctx.strokeStyle = previewState.visibleColor;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(centerX, canvas.height);
+    ctx.lineTo(centerX, boxY);
+    ctx.stroke();
+  }
+
+  // Fill Box
+  ctx.fillStyle = previewState.visibleColor + Math.floor(previewState.fillAlpha * 255).toString(16).padStart(2,"0");
+  ctx.fillRect(boxX, boxY, boxW, boxH);
+
+  // Box
+  if (previewState.box) {
+    ctx.strokeStyle = previewState.visibleColor;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(boxX, boxY, boxW, boxH);
+  }
+
+  // Corner Box
+  if (previewState.corner) {
+    const l = 16;
+    ctx.strokeStyle = previewState.visibleColor;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(boxX, boxY+l); ctx.lineTo(boxX, boxY); ctx.lineTo(boxX+l, boxY);
+    ctx.moveTo(boxX+boxW-l, boxY); ctx.lineTo(boxX+boxW, boxY); ctx.lineTo(boxX+boxW, boxY+l);
+    ctx.moveTo(boxX, boxY+boxH-l); ctx.lineTo(boxX, boxY+boxH); ctx.lineTo(boxX+l, boxY+boxH);
+    ctx.moveTo(boxX+boxW-l, boxY+boxH); ctx.lineTo(boxX+boxW, boxY+boxH); ctx.lineTo(boxX+boxW, boxY+boxH-l);
+    ctx.stroke();
+  }
+
+  // Skeleton (Roblox R6 style)
+  if (previewState.skeleton) {
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+
+    const headY = boxY + 25;
+    const chestY = boxY + 65;
+    const hipY = boxY + 120;
+
+    ctx.beginPath();
+    ctx.arc(centerX, headY, 10, 0, Math.PI * 2); // head
+    ctx.moveTo(centerX, headY + 10);
+    ctx.lineTo(centerX, hipY); // spine
+
+    // arms
+    ctx.moveTo(centerX - 30, chestY);
+    ctx.lineTo(centerX + 30, chestY);
+
+    // legs
+    ctx.moveTo(centerX, hipY);
+    ctx.lineTo(centerX - 20, bottomY);
+
+    ctx.moveTo(centerX, hipY);
+    ctx.lineTo(centerX + 20, bottomY);
+
+    ctx.stroke();
+  }
+
+  // Name & Distance
+  ctx.font = "bold 14px Inter";
+  ctx.fillStyle = "#fff";
+  if (previewState.name) ctx.fillText("PlayerName", boxX, boxY - 22);
+  if (previewState.distance) ctx.fillText("32m", boxX + boxW - 30, boxY - 22);
+
+  // Health Bar
+  if (previewState.health) {
+    const hp = 0.72;
+    const barH = boxH;
+    const barX = boxX - 10;
+
+    ctx.fillStyle = "#111";
+    ctx.fillRect(barX, boxY, 6, barH);
+
+    ctx.fillStyle = "#00ff6a";
+    ctx.fillRect(barX, boxY + barH * (1 - hp), 6, barH * hp);
+  }
+
+  // Passive Tag
+  if (previewState.passive) {
+    ctx.font = "bold 12px Inter";
+    ctx.fillStyle = previewState.passiveColor;
+    ctx.fillText("(P)", centerX - 10, boxY + boxH + 18);
+  }
+}
+
+drawESPPreview();
+
+    
     document.querySelectorAll('.tab').forEach(btn=>{
       btn.addEventListener('click',()=>{
         const id = btn.dataset.tab;
