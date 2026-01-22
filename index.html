@@ -31,6 +31,7 @@ body {
   transform: translate(-50%, -50%);
   z-index: 9999;
   mix-blend-mode: difference;
+  transition: transform 0.1s ease, background 0.2s ease;
 }
 
 .cursor-follower {
@@ -43,6 +44,7 @@ body {
   transform: translate(-50%, -50%);
   z-index: 10000;
   box-shadow: 0 0 12px rgba(255,121,198,.9);
+  transition: transform 0.2s ease;
 }
 
 #particles {
@@ -50,6 +52,44 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
+}
+
+#enter-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 28, 28, 0.95);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+  cursor: pointer;
+  transition: opacity 0.5s ease;
+}
+
+#enter-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#enter-text {
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(90deg,#ff79c6,#ff9ecd,#ff79c6);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: enterFlow 3s linear infinite, pulse 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes enterFlow {
+  0% { background-position: 0% }
+  100% { background-position: 200% }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(1.1); opacity: 1; }
 }
 
 .container {
@@ -70,12 +110,20 @@ body {
   box-shadow:
     0 30px 80px rgba(0,0,0,.65),
     inset 0 0 0 1px rgba(255,121,198,.08);
-  animation: pop 0.7s cubic-bezier(.25,1.6,.5,1) forwards;
+  animation: pop 0.8s cubic-bezier(.25,1.6,.5,1) forwards;
   opacity: 0;
+  transform-origin: center;
 }
 
 @keyframes pop {
-  to { transform: scale(1); opacity: 1; }
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes popupBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
 }
 
 .header {
@@ -93,11 +141,22 @@ body {
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: flow 4s linear infinite;
+  animation: flow 4s linear infinite, titlePulse 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes flow {
+  0% { background-position: 0% }
+  100% { background-position: 200% }
+}
+
+@keyframes titlePulse {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.02) rotate(0.5deg); }
+  100% { transform: scale(1) rotate(0deg); }
 }
 
 .discord-btn {
-  margin-top: 10;
+  margin-top: 10px;
   padding: 12px 22px;
   font-size: 14px;
   font-weight: 600;
@@ -106,24 +165,31 @@ body {
   border: none;
   border-radius: 14px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   box-shadow:
     0 10px 25px rgba(255,121,198,0.45),
     inset 0 0 0 1px rgba(255,255,255,0.2);
 }
 
-.discord-bt
-
-
-@keyframes flow {
-  0% { background-position: 0% }
-  100% { background-position: 200% }
+.discord-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 15px 35px rgba(255,121,198,0.7),
+              inset 0 0 0 1px rgba(255,255,255,0.25);
 }
+
 </style>
 </head>
 
-
 <body>
+    
+<div id="enter-overlay">
+  <div id="enter-text">Click to Enter</div>
+</div>
+    
+<audio id="bg-music" loop>
+  <source src="https://kuromiware.shop/Cloud%20%20Mosqui.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
     
 <button
   class="discord-btn"
@@ -144,7 +210,6 @@ body {
 </div>
 
 <script>
-
 const cursor = document.querySelector('.cursor');
 const follower = document.querySelector('.cursor-follower');
 
@@ -166,7 +231,6 @@ document.addEventListener('mousemove',e=>{
   follower.style.top=fy+'px';
   requestAnimationFrame(animateCursor);
 })();
-
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
 
@@ -186,6 +250,7 @@ class Particle {
     this.vx=(Math.random()-.5)*0.6;
     this.vy=(Math.random()-.5)*0.6;
     this.size=Math.random()*2+0.8;
+    this.baseSize = this.size;
   }
   update(){
     const dx=mouse.x-this.x;
@@ -202,6 +267,8 @@ class Particle {
 
     if(this.x<0||this.x>canvas.width) this.vx*=-1;
     if(this.y<0||this.y>canvas.height) this.vy*=-1;
+
+    this.size = this.baseSize + Math.sin(Date.now()/500 + this.x + this.y) * 0.5;
   }
   draw(){
     ctx.fillStyle='rgba(255,121,198,.45)';
@@ -232,6 +299,22 @@ const parts=[...Array(140)].map(()=>new Particle());
   }
   requestAnimationFrame(animate);
 })();
+
+const overlay = document.getElementById('enter-overlay');
+const music = document.getElementById('bg-music');
+
+overlay.addEventListener('click', () => {
+  overlay.classList.add('hidden'); 
+
+  music.volume = 0.25;
+  const playPromise = music.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      document.body.addEventListener('click', () => music.play(), { once: true });
+    });
+  }
+});
+
 </script>
 
 </body>
