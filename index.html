@@ -1,225 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#120a14" />
-<title>KuromiWare v1</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KuromiWare</title>
 
 <style>
-:root {
-  --pink: #ff8ad6;
-  --lav: #c4a1ff;
-  --ink: #0e090f;
-  --muted: #d1c9e4;
-  --panel: rgba(30, 20, 38, .5);
-  --white: #faf8fc;
-  --glow: 0 0 25px rgba(255,138,214,.35), 0 0 60px rgba(196,161,255,.25);
-  --radius: 22px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; color: var(--white); background: var(--ink); overflow-x: hidden; }
 
-.bg {
-  position: fixed; inset: 0; z-index: -3; overflow: hidden;
-  background:
-    radial-gradient(1500px 800px at 80% 10%, rgba(255,138,214,.25), transparent 60%),
-    radial-gradient(1000px 800px at 15% 80%, rgba(196,161,255,.25), transparent 60%),
-    url('https://motionbgs.com/media/1730/sweet-and-spooky-kuromi.jpg') center/cover no-repeat fixed;
-  filter: brightness(.9) contrast(1.05) saturate(1.1);
-  animation: zoom 40s ease-in-out infinite alternate;
+body {
+  height: 100vh;
+  background: radial-gradient(circle at top, #1c1c1c, #0f0f0f);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #e0e0e0;
+  overflow: hidden;
+  cursor: none;
 }
-@keyframes zoom { from { transform: scale(1); } to { transform: scale(1.12) translate(-1%,1%); } }
 
-.aurora::before {
-  content:""; position:fixed; inset:-20%; z-index:-2; pointer-events:none;
-  background:
-    radial-gradient(50% 80% at 40% 40%, rgba(255,138,214,.22), transparent 70%),
-    radial-gradient(60% 80% at 70% 70%, rgba(196,161,255,.18), transparent 70%);
-  filter: blur(80px) saturate(1.2);
-  animation: aurora 30s ease-in-out infinite alternate;
+.cursor {
+  position: fixed;
+  width: 26px;
+  height: 26px;
+  border: 2px solid #ff79c6;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  mix-blend-mode: difference;
 }
-@keyframes aurora { from { transform: translateY(-4%) rotate(0deg);} to { transform: translateY(6%) rotate(8deg);} }
 
-canvas#fx { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+.cursor-follower {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: #ff79c6;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  box-shadow: 0 0 12px rgba(255,121,198,.9);
+}
 
-.brand {
-  position: fixed; top: 20px; right: 20px;
-  padding: 10px 16px;
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 14px;
-  background: rgba(30,20,38,.6);
-  backdrop-filter: blur(12px) saturate(1.1);
-  box-shadow: var(--glow);
-  transition: transform .3s ease;
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
 }
-.brand:hover { transform: translateY(-3px); }
-.brand h1 {
-  margin:0; font-weight:800; font-size:1.2rem;
-  background: linear-gradient(90deg,#fff,var(--pink),var(--lav),#fff);
-  background-size: 200% auto;
-  -webkit-background-clip:text; color:transparent;
-  animation: shimmer 8s linear infinite;
-}
-@keyframes shimmer { to { background-position: 200% center; } }
 
-main { display:grid; place-items:center; min-height:100vh; text-align:center; }
-.hero {
-  transform-style: preserve-3d;
-  perspective: 1200px;
-  transition: transform .3s ease;
-}
-.card {
+.container {
   position: relative;
-  padding: clamp(20px,5vw,48px);
-  border-radius: var(--radius);
-  background: linear-gradient(180deg, rgba(30,20,38,.65), rgba(30,20,38,.5));
-  border: 1px solid rgba(255,255,255,.1);
-  box-shadow: var(--glow);
-  backdrop-filter: blur(14px) saturate(1.1);
-  transform: translateZ(50px);
-  overflow:hidden;
+  z-index: 10;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.card::after {
-  content:""; position:absolute; inset:0; border-radius:inherit;
-  background: conic-gradient(from var(--a,0deg), #ffffff22, var(--pink)55%, var(--lav)90%, #ffffff22);
-  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor; mask-composite:exclude;
-  animation:borderSpin 12s linear infinite;
-  pointer-events:none;
-}
-@keyframes borderSpin { to { --a: 360deg; } }
-h2.title {
-  font-size: clamp(44px,9vw,100px);
-  margin:0;
-  background: radial-gradient(circle at 30% 30%, #fff, var(--pink) 50%, var(--lav) 100%);
-  -webkit-background-clip:text; color:transparent;
-  text-shadow:0 8px 60px rgba(255,138,214,.2);
-}
-p.subtitle {
-  font-size: clamp(16px,2.4vw,20px);
-  color: var(--muted);
-  margin-top:12px;
-  letter-spacing:.3px;
-}
-.sheen {
-  content:""; position:absolute; inset:-1px; border-radius:inherit;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
-  transform:translateX(-120%);
-  animation:sheenMove 5s ease-in-out infinite;
-  mix-blend-mode:screen;
-}
-@keyframes sheenMove { 0%{transform:translateX(-120%);} 50%{transform:translateX(120%);} 100%{transform:translateX(120%);} }
 
-.cta-dock {
-  position: fixed; right: 24px; bottom: 24px; z-index: 10;
-  display:flex; gap:12px;
-  padding:12px;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:18px;
-  background:rgba(30,20,38,.55);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--glow);
-  animation:dockIn .8s ease-out both .3s;
+.kuromiware-popup {
+  width: 380px;
+  background: rgba(25,25,25,.75);
+  backdrop-filter: blur(18px);
+  border-radius: 22px;
+  border: 1px solid rgba(255,121,198,.18);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.65),
+    inset 0 0 0 1px rgba(255,121,198,.08);
+  animation: pop 0.7s cubic-bezier(.25,1.6,.5,1) forwards;
+  opacity: 0;
 }
-@keyframes dockIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-.cta {
-  display:inline-flex; align-items:center; gap:8px;
-  padding:12px 18px;
-  border-radius:12px; text-decoration:none; color:#fff;
-  font-weight:700; letter-spacing:.3px;
-  background:linear-gradient(90deg,#5865F2,#8EA1E1);
-  box-shadow:0 8px 20px rgba(0,0,0,.3);
-  transition:transform .2s ease, box-shadow .2s ease;
+
+@keyframes pop {
+  to { transform: scale(1); opacity: 1; }
 }
-.cta:hover { transform:translateY(-2px) scale(1.03); box-shadow:0 14px 30px rgba(0,0,0,.4); }
-.cta svg { width:18px; height:18px; fill:#fff; }
 
-footer { text-align:center; font-size:13px; color:var(--muted); margin-top:40px; }
+.header {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
 
-@media (max-width:560px){
-  .card { padding:28px 22px; }
-  .brand { top:10px; right:10px; }
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(90deg,#ff79c6,#ff9ecd,#ff79c6);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: flow 4s linear infinite;
+}
+
+.discord-btn {
+  margin-top: 10;
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f0f0f;
+  background: linear-gradient(135deg, #ff79c6, #ff9ecd);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow:
+    0 10px 25px rgba(255,121,198,0.45),
+    inset 0 0 0 1px rgba(255,255,255,0.2);
+}
+
+.discord-bt
+
+
+@keyframes flow {
+  0% { background-position: 0% }
+  100% { background-position: 200% }
 }
 </style>
 </head>
+
+
 <body>
+    
+<button
+  class="discord-btn"
+  onclick="window.open('https://discord.gg/cKSmKsmKC8', '_blank')">
+  Join Discord
+</button>
 
-<div class="bg"></div>
-<div class="aurora"></div>
-<canvas id="fx"></canvas>
+<canvas id="particles"></canvas>
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
 
-<div class="brand"><h1>KuromiWare v1</h1></div>
-
-<main>
-  <section class="hero" id="hero">
-    <div class="card" id="tilt">
-      <h2 class="title">KuromiWare</h2>
-      <p class="subtitle">The evolution of playful precision.</p>
-      <span class="sheen"></span>
+<div class="container">
+  <div class="kuromiware-popup">
+    <div class="header">
+      <div class="title">KuromiWare</div>
     </div>
-    <footer>© <span id="year"></span> KuromiWare</footer>
-  </section>
-</main>
-
-<nav class="cta-dock">
-  <a class="cta" href="https://discord.gg/KYT59FhvV9" target="_blank">
-    <svg viewBox="0 0 24 24"><path d="M19.54 5.34a16.6 16.6 0 0 0-4.06-1.26c-.17.31-.37.73-.5 1.06a15.16 15.16 0 0 0-5.94 0c-.13-.34-.33-.75-.5-1.06-1.42.26-2.78.7-4.06 1.26C2.67 9.07 1.98 12.7 2.2 16.28a16.4 16.4 0 0 0 5 2.52c.4-.55.75-1.13 1.05-1.75-.58-.22-1.13-.48-1.65-.79.14-.1.28-.2.42-.31a11.46 11.46 0 0 0 10.96 0c.14.11.28.21.42.31-.52.31-1.07.57-1.65.79.3.62.65 1.2 1.05 1.75a16.4 16.4 0 0 0 5-2.52c.26-4.03-.45-7.63-2.78-10.94Z"/></svg>
-    Discord
-  </a>
-</nav>
+  </div>
+</div>
 
 <script>
-document.getElementById("year").textContent = new Date().getFullYear();
 
-(() => {
-  const tilt = document.getElementById('tilt');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) return;
-  window.addEventListener('mousemove', e => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 2;
-    const y = (e.clientY / window.innerHeight - 0.5) * 2;
-    tilt.style.transform = `rotateX(${y * -8}deg) rotateY(${x * 10}deg)`;
-  }, { passive: true });
+const cursor = document.querySelector('.cursor');
+const follower = document.querySelector('.cursor-follower');
+
+let mx=0,my=0,cx=0,cy=0,fx=0,fy=0;
+
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+});
+
+(function animateCursor(){
+  cx += (mx-cx)*0.4;
+  cy += (my-cy)*0.4;
+  fx += (mx-fx)*0.15;
+  fy += (my-fy)*0.15;
+
+  cursor.style.left=cx+'px';
+  cursor.style.top=cy+'px';
+  follower.style.left=fx+'px';
+  follower.style.top=fy+'px';
+  requestAnimationFrame(animateCursor);
 })();
 
-(() => {
-  const canvas = document.getElementById('fx');
-  const ctx = canvas.getContext('2d');
-  let w,h,dpr,stars;
-  function resize(){
-    dpr = window.devicePixelRatio||1;
-    w = canvas.width = innerWidth*dpr;
-    h = canvas.height = innerHeight*dpr;
-    ctx.scale(dpr,dpr);
-    make();
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+resize(); addEventListener('resize',resize);
+
+const mouse = {x:0,y:0};
+addEventListener('mousemove',e=>{mouse.x=e.x;mouse.y=e.y});
+
+class Particle {
+  constructor(){
+    this.x=Math.random()*canvas.width;
+    this.y=Math.random()*canvas.height;
+    this.vx=(Math.random()-.5)*0.6;
+    this.vy=(Math.random()-.5)*0.6;
+    this.size=Math.random()*2+0.8;
   }
-  function make(){
-    stars = Array.from({length:120}, ()=>({
-      x: Math.random()*innerWidth,
-      y: Math.random()*innerHeight,
-      r: Math.random()*1.5+0.3,
-      s: Math.random()*0.6+0.2
-    }));
-  }
-  function draw(){
-    ctx.clearRect(0,0,innerWidth,innerHeight);
-    for(const s of stars){
-      s.x+=s.s; s.y+=s.s*0.4;
-      if(s.x>innerWidth||s.y>innerHeight){ s.x=Math.random()*innerWidth; s.y=-5; }
-      const g = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*6);
-      g.addColorStop(0,'rgba(255,255,255,.9)');
-      g.addColorStop(.4,'rgba(255,138,214,.4)');
-      g.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=g;
-      ctx.beginPath(); ctx.arc(s.x,s.y,s.r*3,0,Math.PI*2); ctx.fill();
+  update(){
+    const dx=mouse.x-this.x;
+    const dy=mouse.y-this.y;
+    const dist=Math.hypot(dx,dy);
+    if(dist<160){
+      this.vx += dx/dist*0.03;
+      this.vy += dy/dist*0.03;
     }
-    requestAnimationFrame(draw);
+    this.x+=this.vx;
+    this.y+=this.vy;
+    this.vx*=0.98;
+    this.vy*=0.98;
+
+    if(this.x<0||this.x>canvas.width) this.vx*=-1;
+    if(this.y<0||this.y>canvas.height) this.vy*=-1;
   }
-  resize(); draw();
-  addEventListener('resize',resize);
+  draw(){
+    ctx.fillStyle='rgba(255,121,198,.45)';
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+
+const parts=[...Array(140)].map(()=>new Particle());
+
+(function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let i=0;i<parts.length;i++){
+    parts[i].update();
+    parts[i].draw();
+    for(let j=i+1;j<parts.length;j++){
+      const d=Math.hypot(parts[i].x-parts[j].x,parts[i].y-parts[j].y);
+      if(d<90){
+        ctx.strokeStyle=`rgba(255,121,198,${1-d/90})`;
+        ctx.lineWidth=0.5;
+        ctx.beginPath();
+        ctx.moveTo(parts[i].x,parts[i].y);
+        ctx.lineTo(parts[j].x,parts[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
 })();
 </script>
+
 </body>
 </html>
