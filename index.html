@@ -157,7 +157,7 @@ body {
 
 .discord-btn {
   position: fixed;
-  bottom: 32px;
+  top: 32px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 15000;
@@ -204,7 +204,7 @@ body {
   <div id="enter-text">Click to Enter</div>
 </div>
     
-<audio id="bg-music" loop>
+<audio id="bg-music" loop crossorigin="anonymous">
   <source src="https://kuromiware.shop/Works_Out.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
@@ -215,6 +215,7 @@ body {
   Join Discord
 </button>
 
+<canvas id="visualizer" style="position: fixed; inset: 0; pointer-events: none; z-index: 2; mix-blend-mode: screen;"></canvas>
 <canvas id="particles"></canvas>
 <div class="cursor"></div>
 <div class="cursor-follower"></div>
@@ -333,6 +334,74 @@ overlay.addEventListener('click', () => {
   }
 });
 
+</script>
+
+<script>
+const audio = document.getElementById('bg-music');
+const visCanvas = document.getElementById('visualizer');
+const visCtx = visCanvas.getContext('2d');
+
+let audioCtx, analyser, bufferLength, dataArray;
+
+function initAudioVisualizer() {
+  if (audioCtx) return; 
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const source = audioCtx.createMediaElementSource(audio);
+  analyser = audioCtx.createAnalyser();
+
+  analyser.fftSize = 256;   
+  bufferLength = analyser.frequencyBinCount;
+  dataArray = new Uint8Array(bufferLength);
+
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination); 
+}
+
+function resizeVisualizer() {
+  visCanvas.width = innerWidth;
+  visCanvas.height = innerHeight;
+}
+resizeVisualizer();
+addEventListener('resize', resizeVisualizer);
+
+function drawVisualizer() {
+  if (!analyser) return;
+
+  requestAnimationFrame(drawVisualizer);
+
+  analyser.getByteFrequencyData(dataArray);
+
+  visCtx.clearRect(0, 0, visCanvas.width, visCanvas.height);
+
+  const barWidth = (visCanvas.width / bufferLength) * 2.5; 
+  const barCount = Math.floor(bufferLength / 1.8); 
+
+  for (let i = 0; i < barCount; i++) {
+    const barHeight = (dataArray[i] / 255) * (visCanvas.height * 0.45); 
+
+    const hue = 300 + (i / barCount) * 60;
+    visCtx.fillStyle = `hsla(${hue}, 90%, 65%, ${0.6 + dataArray[i]/512})`;
+
+    visCtx.shadowColor = `hsla(${hue}, 100%, 70%, 0.9)`;
+    visCtx.shadowBlur = 12 + (dataArray[i] / 20);
+
+    const x = visCanvas.width / 2 - (barCount * barWidth) / 2 + i * barWidth;
+    const y = visCanvas.height - barHeight - 60; 
+
+    visCtx.fillRect(x, y, barWidth - 2, barHeight);
+
+    visCtx.globalAlpha = 0.35;
+    visCtx.fillRect(x, visCanvas.height - 60 + 4, barWidth - 2, barHeight * 0.4);
+    visCtx.globalAlpha = 1;
+  }
+}
+
+
+overlay.addEventListener('click', () => {
+  initAudioVisualizer();
+  drawVisualizer(); 
+}, { once: true }); 
 </script>
 
 </body>
