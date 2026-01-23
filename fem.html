@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@A</title>
+<meta name="theme-color" content="#0b0b0b">
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+  background:#050505 url("c8f31b31a576ab06615b9f4a8bbcd125.jpg") center/cover no-repeat fixed;
+  color:#eaeaea;
+  overflow:hidden
+}
+
+.e{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(5,5,5,.88);
+  z-index:10;
+  cursor:pointer
+}
+.e span{
+  color:#999;
+  font-size:14px;
+  letter-spacing:.08em;
+  animation:blink 1.4s infinite
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+canvas#snow{
+  position:fixed;
+  inset:0;
+  z-index:1;
+  pointer-events:none
+}
+
+.c{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  transition:opacity .6s ease;
+  position:relative;
+  z-index:2
+}
+.sh{opacity:1}
+
+.k{
+  width:480px;
+  max-width:calc(100% - 32px);
+  padding:26px 26px 22px;
+  background:linear-gradient(180deg,rgba(14,14,14,.95),rgba(9,9,9,.95));
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:14px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.02),
+    0 25px 60px rgba(0,0,0,.85);
+  backdrop-filter:blur(6px)
+}
+
+.u{
+  font-size:22px;
+  font-weight:600;
+  color:#fff;
+  margin-bottom:18px;
+  letter-spacing:.02em
+}
+.u::after{
+  content:"";
+  display:block;
+  height:2px;
+  width:42px;
+  margin-top:8px;
+  background:linear-gradient(90deg,#7aa2f7,#9d7af7);
+  opacity:.8
+}
+
+.s{
+  margin-bottom:18px
+}
+.l{
+  font-size:11px;
+  color:#777;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  margin-bottom:6px
+}
+.i{
+  line-height:1.65;
+  color:#e0e0e0;
+  font-size:14px
+}
+.i + .i{margin-top:2px}
+
+a{
+  color:#9bbcff;
+  text-decoration:none
+}
+a:hover{text-decoration:underline}
+
+.f{
+  margin-top:16px;
+  font-size:12px;
+  color:#777;
+  opacity:.9
+}
+
+#muteBtn{
+  position:fixed;
+  top:12px;
+  right:12px;
+  z-index:20;
+  background:rgba(10,10,10,.9);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;
+  color:#aaa;
+  font-family:inherit;
+  font-size:12px;
+  padding:6px 12px;
+  cursor:pointer
+}
+#muteBtn:hover{color:#fff}
+</style>
+</head>
+
+<body>
+
+<button id="muteBtn">mute</button>
+
+<div class="e" onclick="enter()">
+  <span>click to enter</span>
+</div>
+
+<canvas id="snow"></canvas>
+
+<div class="c" id="main">
+  <div class="k">
+    <div class="u">@A</div>
+
+    <div class="s">
+      <div class="l">about</div>
+      <div class="i">femboy</div>
+      <div class="i">coinbase support</div>
+      <div class="i">learning as i go</div>
+    </div>
+
+    <div class="s">
+      <div class="l">links</div>
+      <div class="i">discord — 83pm</div>
+      <div class="i">
+        <a href="https://www.instagram.com/femboyfraud" target="_blank">
+          instagram
+        </a> — @femboyfraud
+      </div>
+    </div>
+
+    <div class="f">=^.^=</div>
+  </div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+let player, muted=false;
+
+function enter(){
+  document.querySelector(".e").style.display="none";
+  document.getElementById("main").classList.add("sh");
+  if(player) return;
+
+  const d=document.createElement("div");
+  d.id="bgm";
+  d.style.position="fixed";
+  d.style.width="1px";
+  d.style.height="1px";
+  d.style.opacity="0";
+  document.body.appendChild(d);
+
+  player=new YT.Player("bgm",{
+    videoId:"Jn8HZtWyjw0",
+    playerVars:{autoplay:1,controls:0,loop:1,playlist:"Jn8HZtWyjw0"},
+    events:{
+      onReady:e=>{
+        e.target.setVolume(30);
+        e.target.playVideo();
+      }
+    }
+  });
+}
+
+muteBtn.onclick=()=>{
+  if(!player) return;
+  muted=!muted;
+  muted ? player.mute() : player.unMute();
+  muteBtn.textContent = muted ? "unmute" : "mute";
+};
+</script>
+
+<script>
+const c=document.getElementById("snow"),x=c.getContext("2d");
+let w,h;
+function r(){w=c.width=innerWidth;h=c.height=innerHeight}
+addEventListener("resize",r);r();
+const p=Array.from({length:140},()=>({
+  x:Math.random()*w,
+  y:Math.random()*h,
+  r:Math.random()*2+1,
+  s:Math.random()+.5
+}));
+(function a(){
+  x.clearRect(0,0,w,h);
+  x.fillStyle="rgba(255,255,255,.7)";
+  p.forEach(o=>{
+    x.beginPath();
+    x.arc(o.x,o.y,o.r,0,Math.PI*2);
+    x.fill();
+    o.y+=o.s;
+    o.x+=Math.sin(o.y*.01);
+    if(o.y>h){o.y=-5;o.x=Math.random()*w}
+  });
+  requestAnimationFrame(a);
+})();
+</script>
+  
+<script>
+(function(){
+addEventListener("contextmenu",e=>e.preventDefault());
+addEventListener("keydown",e=>{
+  if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&["I","J","C"].includes(e.key))||(e.ctrlKey&&e.key==="U")){
+    e.preventDefault();e.stopPropagation();
+  }
+},true);
+})();
+</script>
+
+</body>
+</html>
